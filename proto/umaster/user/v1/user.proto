@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package umaster.user.v1;
+
+import "shared/user/v1/user.proto";
+
+service UserService {
+  rpc GetOrCreateUserByEmail(GetOrCreateUserByEmailRequest) returns (GetOrCreateUserByEmailResponse) {}
+}
+
+message GetOrCreateUserByEmailRequest {
+  string email = 1;
+  optional string source = 2;
+}
+
+message GetOrCreateUserByEmailResponse {
+  shared.user.v1.User user = 1;
+  bool is_new_user = 2;
+}
