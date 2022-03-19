@@ -6,12 +6,12 @@ import {
   GcloudLoggingLevel,
   LOGGER_FACTORY_OPTION,
 } from './logger.constant';
-import { MoshLoggerService } from './logger.service';
+import { LoggerService } from './logger.service';
 import { LoggerServiceOption as LoggerFactoryOption } from './logger.type';
 import { plainLogFormat, severityFormat } from './logger.util';
 
 @Injectable()
-export class MoshLoggerFactoryService {
+export class LoggerFactoryService {
   logger: winston.Logger;
 
   constructor(@Inject(LOGGER_FACTORY_OPTION) options: LoggerFactoryOption) {
@@ -33,7 +33,7 @@ export class MoshLoggerFactoryService {
     });
   }
 
-  createLogger(caller: string): MoshLoggerService {
-    return new MoshLoggerService(this.logger.child({ caller: caller }));
+  createLogger(caller: string): LoggerService {
+    return new LoggerService(this.logger.child({ caller: caller }));
   }
 }

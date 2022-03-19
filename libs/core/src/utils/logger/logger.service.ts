@@ -1,6 +1,6 @@
 import * as winston from 'winston';
 
-export class MoshLoggerService {
+export class LoggerService {
   private logger: any;
 
   constructor(logger: winston.Logger) {

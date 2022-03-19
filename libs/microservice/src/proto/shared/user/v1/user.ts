@@ -10,6 +10,18 @@ export enum UserGender {
   MALE = 2,
 }
 
+export enum ItemType {
+  IMAGE = 0,
+  VIDEO = 1,
+  GIF = 2,
+}
+
+export interface Item {
+  id: string;
+  type: ItemType;
+  link: string;
+}
+
 export interface User {
   id: string;
   username: string;
@@ -20,6 +32,12 @@ export interface User {
   country: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface UserItem {
+  id: string;
+  userId: string;
+  item?: Item;
 }
 
 export const SHARED_USER_V1_PACKAGE_NAME = 'shared.user.v1';

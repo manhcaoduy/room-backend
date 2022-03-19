@@ -8,6 +8,18 @@ enum UserGender {
   MALE = 2;
 }
 
+enum ItemType {
+  IMAGE = 0;
+  VIDEO = 1;
+  GIF = 2;
+}
+
+message Item {
+  string id = 1;
+  ItemType type = 2;
+  string link = 3;
+}
+
 message User {
   string id = 1;
   string username = 2;
@@ -19,4 +31,10 @@ message User {
 
   string created_at = 99;
   string updated_at = 100;
+}
+
+message UserItem {
+  string id = 1;
+  string user_id = 2;
+  Item item = 3;
 }
