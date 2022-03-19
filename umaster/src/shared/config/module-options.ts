@@ -4,7 +4,7 @@ import * as Joi from 'joi';
 import configuration from './configuration';
 
 export const configModuleOptions: ConfigModuleOptions = {
-  envFilePath: ['.env', 'apps/umaster/.env.local'],
+  envFilePath: ['.env', 'umaster/.env.local'],
   load: [configuration],
   isGlobal: true,
   validationSchema: Joi.object({
@@ -21,9 +21,5 @@ export const configModuleOptions: ConfigModuleOptions = {
 
     // Mongo
     MONGO_URI: Joi.string().required(),
-
-    // GCS
-    GCS_BUCKET: Joi.string().required(),
-    GCS_SERVICE_ACCOUNT: Joi.string().required(),
   }),
 };

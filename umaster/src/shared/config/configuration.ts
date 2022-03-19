@@ -10,15 +10,8 @@ export default () => ({
     level: process.env.LOG_LEVEL,
     useJsonFormat: parseBooleanConfig(process.env.LOG_USE_JSON),
   },
-  grpcInterceptor: {
-    logResponse: parseBooleanConfig(process.env.GRPC_INTERCEPTOR_LOG_RESPONSE),
-  },
   mongo: {
     uri: process.env.MONGO_URI,
     debug: parseBooleanConfig(process.env.MONGO_DEBUG),
-  },
-  gcs: {
-    bucketName: process.env.GCS_BUCKET,
-    serviceAccount: process.env.GCS_SERVICE_ACCOUNT,
   },
 });

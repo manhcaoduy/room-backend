@@ -18,6 +18,16 @@
         "tsConfigPath": "bff/tsconfig.app.json",
         "watchAssets": true
       }
+    },
+    "umaster": {
+      "type": "application",
+      "root": "umaster",
+      "entryFile": "main",
+      "sourceRoot": "umaster/src",
+      "compilerOptions": {
+        "tsConfigPath": "umaster/tsconfig.app.json",
+        "watchAssets": true
+      }
     }
   }
 }

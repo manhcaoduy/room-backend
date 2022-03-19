@@ -1,5 +1,5 @@
-import { Exclude } from 'class-transformer';
-import { ItemType } from '@app/microservice/proto/shared/user/v1/user';
+import { Exclude, Expose } from 'class-transformer';
+import { ItemType } from '@app/microservice/proto/shared/item/v1/item';
 
 @Exclude()
 export class UserItemEntity {
