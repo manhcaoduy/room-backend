@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package shared.item.v1;
+
+enum ItemType {
+  IMAGE = 0;
+  VIDEO = 1;
+  GIF = 2;
+}
+
+message Item {
+  string id = 1;
+  string user_id = 2;
+  ItemType type = 3;
+  string link = 4;
+}

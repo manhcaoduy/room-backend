@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package emaster.item.v1;
+
+import "shared/item/v1/item.proto";
+
+service ItemService {
+  rpc GetUserItem(GetUserItemRequest) returns (GetUserItemResponse) {}
+  rpc AddUserItem(AddUserItemRequest) returns (AddUserItemResponse) {}
+  rpc RemoveUserItem(RemoveUserItemRequest) returns (RemoveUserItemResponse) {}
+  rpc CreateUserItem(CreateUserItemRequest) returns (CreateUserItemResponse) {}
+}
+
+message GetUserItemRequest { string user_id = 1; }
+
+message GetUserItemResponse { repeated shared.item.v1.Item items = 1; }
+
+message AddUserItemRequest {
+  string user_id = 1;
+  shared.item.v1.Item item = 2;
+}
+
+message AddUserItemResponse { shared.item.v1.Item item = 1; }
+
+message RemoveUserItemRequest { shared.item.v1.Item item = 1; }
+
+message RemoveUserItemResponse { shared.item.v1.Item item = 1; }
+
+message CreateUserItemRequest {
+  shared.item.v1.ItemType type = 1;
+  string link = 2;
+}
+
+message CreateUserItemResponse { shared.item.v1.Item item = 1; }

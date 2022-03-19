@@ -2,7 +2,7 @@
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { util, configure } from 'protobufjs/minimal';
 import * as Long from 'long';
-import { User } from '../../../shared/user/v1/user';
+import { User, UserProfile } from '../../../shared/user/v1/user';
 import { Observable } from 'rxjs';
 import { Metadata } from '@grpc/grpc-js';
 
@@ -10,12 +10,52 @@ export const protobufPackage = 'umaster.user.v1';
 
 export interface GetOrCreateUserByEmailRequest {
   email: string;
-  source?: string | undefined;
 }
 
 export interface GetOrCreateUserByEmailResponse {
   user?: User;
   isNewUser: boolean;
+}
+
+export interface FindByIdRequest {
+  userId: string;
+}
+
+export interface FindByIdResponse {
+  user?: User;
+}
+
+export interface FindByIdsRequest {
+  userIds: string[];
+}
+
+export interface FindByIdsResponse {
+  users: User[];
+}
+
+export interface FindByEmailRequest {
+  email: string;
+}
+
+export interface FindByEmailResponse {
+  user?: User;
+}
+
+export interface FindByUsernameRequest {
+  username: string;
+}
+
+export interface FindByUsernameResponse {
+  user?: User;
+}
+
+export interface UpdateProfileRequest {
+  userId: string;
+  userProfile?: UserProfile;
+}
+
+export interface UpdateProfileResponse {
+  user?: User;
 }
 
 export const UMASTER_USER_V1_PACKAGE_NAME = 'umaster.user.v1';
@@ -25,6 +65,31 @@ export interface UserServiceClient {
     request: GetOrCreateUserByEmailRequest,
     metadata?: Metadata,
   ): Observable<GetOrCreateUserByEmailResponse>;
+
+  findById(
+    request: FindByIdRequest,
+    metadata?: Metadata,
+  ): Observable<FindByIdResponse>;
+
+  findByIds(
+    request: FindByIdsRequest,
+    metadata?: Metadata,
+  ): Observable<FindByIdsResponse>;
+
+  findByEmail(
+    request: FindByEmailRequest,
+    metadata?: Metadata,
+  ): Observable<FindByEmailResponse>;
+
+  findByUsername(
+    request: FindByUsernameRequest,
+    metadata?: Metadata,
+  ): Observable<FindByUsernameResponse>;
+
+  updateProfile(
+    request: UpdateProfileRequest,
+    metadata?: Metadata,
+  ): Observable<UpdateProfileResponse>;
 }
 
 export interface UserServiceController {
@@ -35,11 +100,58 @@ export interface UserServiceController {
     | Promise<GetOrCreateUserByEmailResponse>
     | Observable<GetOrCreateUserByEmailResponse>
     | GetOrCreateUserByEmailResponse;
+
+  findById(
+    request: FindByIdRequest,
+    metadata?: Metadata,
+  ):
+    | Promise<FindByIdResponse>
+    | Observable<FindByIdResponse>
+    | FindByIdResponse;
+
+  findByIds(
+    request: FindByIdsRequest,
+    metadata?: Metadata,
+  ):
+    | Promise<FindByIdsResponse>
+    | Observable<FindByIdsResponse>
+    | FindByIdsResponse;
+
+  findByEmail(
+    request: FindByEmailRequest,
+    metadata?: Metadata,
+  ):
+    | Promise<FindByEmailResponse>
+    | Observable<FindByEmailResponse>
+    | FindByEmailResponse;
+
+  findByUsername(
+    request: FindByUsernameRequest,
+    metadata?: Metadata,
+  ):
+    | Promise<FindByUsernameResponse>
+    | Observable<FindByUsernameResponse>
+    | FindByUsernameResponse;
+
+  updateProfile(
+    request: UpdateProfileRequest,
+    metadata?: Metadata,
+  ):
+    | Promise<UpdateProfileResponse>
+    | Observable<UpdateProfileResponse>
+    | UpdateProfileResponse;
 }
 
 export function UserServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['getOrCreateUserByEmail'];
+    const grpcMethods: string[] = [
+      'getOrCreateUserByEmail',
+      'findById',
+      'findByIds',
+      'findByEmail',
+      'findByUsername',
+      'updateProfile',
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(
         constructor.prototype,

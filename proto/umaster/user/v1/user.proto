@@ -5,15 +5,43 @@ package umaster.user.v1;
 import "shared/user/v1/user.proto";
 
 service UserService {
-  rpc GetOrCreateUserByEmail(GetOrCreateUserByEmailRequest) returns (GetOrCreateUserByEmailResponse) {}
+  rpc GetOrCreateUserByEmail(GetOrCreateUserByEmailRequest)
+      returns (GetOrCreateUserByEmailResponse) {}
+
+  rpc FindById(FindByIdRequest) returns (FindByIdResponse) {}
+  rpc FindByIds(FindByIdsRequest) returns (FindByIdsResponse) {}
+  rpc FindByEmail(FindByEmailRequest) returns (FindByEmailResponse) {}
+  rpc FindByUsername(FindByUsernameRequest) returns (FindByUsernameResponse) {}
+
+  rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileResponse) {}
 }
 
-message GetOrCreateUserByEmailRequest {
-  string email = 1;
-  optional string source = 2;
-}
+message GetOrCreateUserByEmailRequest { string email = 1; }
 
 message GetOrCreateUserByEmailResponse {
   shared.user.v1.User user = 1;
   bool is_new_user = 2;
 }
+
+message FindByIdRequest { string user_id = 1; }
+
+message FindByIdResponse { shared.user.v1.User user = 1; }
+
+message FindByIdsRequest { repeated string user_ids = 1; }
+
+message FindByIdsResponse { repeated shared.user.v1.User users = 1; }
+
+message FindByEmailRequest { string email = 1; }
+
+message FindByEmailResponse { shared.user.v1.User user = 1; }
+
+message FindByUsernameRequest { string username = 1; }
+
+message FindByUsernameResponse { shared.user.v1.User user = 1; }
+
+message UpdateProfileRequest {
+  string user_id = 1;
+  shared.user.v1.UserProfile user_profile = 2;
+}
+
+message UpdateProfileResponse { shared.user.v1.User user = 1; }

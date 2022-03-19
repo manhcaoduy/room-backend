@@ -30,14 +30,18 @@
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/swagger": "^5.2.0",
     "clang-format": "^1.6.0",
+    "class-transformer": "^0.5.1",
     "eslint-plugin-unused-imports": "^2.0.0",
     "husky": "^7.0.4",
     "joi": "^17.6.0",
     "lint-staged": "^12.3.7",
+    "mongoose": "^6.2.7",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
+    "slugify": "^1.6.5",
     "ts-proto": "^1.110.0",
+    "unique-names-generator": "^4.7.1",
     "winston": "^3.6.0"
   },
   "devDependencies": {
