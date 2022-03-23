@@ -1,0 +1,62 @@
+version: '3.6'
+services:
+  backend-mongo-1:
+    container_name: backend-mongo-1
+    image: mongo:4.2.3-bionic
+    ports:
+      - '${MONGO_1_PORT}:27017'
+    restart: unless-stopped
+    command: ['--bind_ip_all', '--replSet', 'rs0']
+    volumes:
+      - ./volumes/mongo/data-1/db:/data/db
+      - ./volumes/mongo/data-1/configdb:/data/configdb
+    networks:
+      - backend_network
+
+  backend-mongo-2:
+    container_name: backend-mongo-2
+    image: mongo:4.2.3-bionic
+    ports:
+      - '${MONGO_2_PORT}:27017'
+    restart: unless-stopped
+    command: ['--bind_ip_all', '--replSet', 'rs0']
+    volumes:
+      - ./volumes/mongo/data-2/db:/data/db
+      - ./volumes/mongo/data-2/configdb:/data/configdb
+    networks:
+      - backend_network
+
+  backend-mongo-3:
+    container_name: backend-mongo-3
+    image: mongo:4.2.3-bionic
+    ports:
+      - '${MONGO_3_PORT}:27017'
+    restart: unless-stopped
+    command: ['--bind_ip_all', '--replSet', 'rs0']
+    volumes:
+      - ./volumes/mongo/data-3/db:/data/db
+      - ./volumes/mongo/data-3/configdb:/data/configdb
+    networks:
+      - backend_network
+
+  mongo-replica-setup:
+    container_name: backend-mongo-setup
+    image: mongo:4.2.3-bionic
+    restart: on-failure
+    volumes:
+      - ./scripts/mongosetup.sh:/scripts/mongosetup.sh
+    environment:
+      MONGODB1: backend-mongo-1
+      MONGODB2: backend-mongo-2
+      MONGODB3: backend-mongo-3
+    entrypoint: ['bash', '/scripts/mongosetup.sh']
+    depends_on:
+      - backend-mongo-1
+      - backend-mongo-2
+      - backend-mongo-3
+    networks:
+      - backend_network
+
+networks:
+  backend_network:
+    external: true

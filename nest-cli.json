@@ -1,4 +1,33 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src"
+  "sourceRoot": "bff/src",
+  "monorepo": true,
+  "root": "bff",
+  "compilerOptions": {
+    "webpack": true,
+    "tsConfigPath": "bff/tsconfig.app.json",
+    "watchAssets": true
+  },
+  "projects": {
+    "bff": {
+      "type": "application",
+      "root": "bff",
+      "entryFile": "main",
+      "sourceRoot": "bff/src",
+      "compilerOptions": {
+        "tsConfigPath": "bff/tsconfig.app.json",
+        "watchAssets": true
+      }
+    },
+    "umaster": {
+      "type": "application",
+      "root": "umaster",
+      "entryFile": "main",
+      "sourceRoot": "umaster/src",
+      "compilerOptions": {
+        "tsConfigPath": "umaster/tsconfig.app.json",
+        "watchAssets": true
+      }
+    }
+  }
 }

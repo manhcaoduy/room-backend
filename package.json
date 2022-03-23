@@ -8,7 +8,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \\\"bff/**/*.ts\\\" \\\"test/**/*.ts\\\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -18,16 +18,32 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config ./test/jest-e2e.json",
+    "postinstall": "husky install"
   },
   "dependencies": {
+    "@grpc/grpc-js": "^1.5.9",
     "@nestjs/common": "^8.0.0",
+    "@nestjs/config": "^2.0.0",
     "@nestjs/core": "^8.0.0",
+    "@nestjs/microservices": "^8.4.1",
     "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/swagger": "^5.2.0",
+    "clang-format": "^1.6.0",
+    "class-transformer": "^0.5.1",
+    "email-validator": "^2.0.4",
+    "eslint-plugin-unused-imports": "^2.0.0",
+    "google-auth-library": "^7.14.0",
+    "husky": "^7.0.4",
+    "joi": "^17.6.0",
+    "lint-staged": "^12.3.7",
+    "mongoose": "^6.2.7",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
+    "slugify": "^1.6.5",
     "ts-proto": "^1.110.0",
+    "unique-names-generator": "^4.7.1",
     "winston": "^3.6.0"
   },
   "devDependencies": {
@@ -83,5 +99,12 @@
         "isolatedModules": true
       }
     }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "prettier --write",
+      "eslint --fix"
+    ],
+    "*.proto": "clang-format -i"
   }
 }

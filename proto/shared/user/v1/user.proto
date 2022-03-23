@@ -8,14 +8,17 @@ enum UserGender {
   MALE = 2;
 }
 
+message UserProfile {
+  string username = 1;
+  UserGender gender = 2;
+}
+
 message User {
   string id = 1;
-  string username = 2;
-  string email = 3;
-  string fullname = 4;
-  UserGender UserGender = 5;
-  string avatar = 6;
-  string country = 7;
+  string email = 2;
+  string password = 3;
+  string username = 4;
+  UserGender gender = 5;
 
   string created_at = 99;
   string updated_at = 100;
