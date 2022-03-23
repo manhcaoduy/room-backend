@@ -1,11 +1,8 @@
 import * as grpc from '@grpc/grpc-js';
 import { HttpStatus } from '@nestjs/common';
 
-import {
-  ROVE_EXCEPTION_PREFIX,
-  ROVE_EXCEPTION_SEPARATOR,
-} from './exception.constant';
-import { MoshExceptionInfo, RoveException } from './exception.interface';
+import { EXCEPTION_PREFIX, EXCEPTION_SEPARATOR } from './exception.constant';
+import { ExceptionInfo, Exception } from './exception.interface';
 
 const grpcToHttpMapping = {
   [grpc.status.OK]: null,
@@ -27,26 +24,26 @@ const grpcToHttpMapping = {
   [grpc.status.DATA_LOSS]: HttpStatus.INTERNAL_SERVER_ERROR,
 };
 
-export const encryptRoveException = (exception: RoveException): string => {
+export const encryptException = (exception: Exception): string => {
   return [
-    ROVE_EXCEPTION_PREFIX,
+    EXCEPTION_PREFIX,
     exception.name,
     exception.message,
     JSON.stringify(exception.info),
-  ].join(ROVE_EXCEPTION_SEPARATOR);
+  ].join(EXCEPTION_SEPARATOR);
 };
 
-export const decryptRoveException = (details: string): RoveException => {
+export const decryptException = (details: string): Exception => {
   // err details has the format `{ERR_PREFIX}{SEPARATOR}{name}{SEPARATOR}{message}{SEPARATOR}{JSON of info}`
-  const parts = details.split(ROVE_EXCEPTION_SEPARATOR);
-  if (parts.length !== 4 || parts[0] !== ROVE_EXCEPTION_PREFIX) {
+  const parts = details.split(EXCEPTION_SEPARATOR);
+  if (parts.length !== 4 || parts[0] !== EXCEPTION_PREFIX) {
     throw new Error("failed parse experience's exception details");
   }
-  let info: MoshExceptionInfo;
+  let info: ExceptionInfo;
   try {
     info = JSON.parse(parts[3]);
   } catch (err) {
-    throw new Error("failed to parse mosh's error details");
+    throw new Error('failed to parse error details');
   }
   return {
     name: parts[1],

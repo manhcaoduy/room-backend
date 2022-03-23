@@ -19,11 +19,11 @@ export class UserEntity {
   id: string;
 
   @Expose()
-  username: string;
-  @Expose()
   email: string;
   @Expose()
-  fullName: string;
+  password: string;
+  @Expose()
+  username: string;
   @Expose()
   gender: UserGender;
 

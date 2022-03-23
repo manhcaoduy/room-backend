@@ -12,15 +12,14 @@ export enum UserGender {
 
 export interface UserProfile {
   username: string;
-  fullName: string;
   gender: UserGender;
 }
 
 export interface User {
   id: string;
-  username: string;
   email: string;
-  fullName: string;
+  password: string;
+  username: string;
   gender: UserGender;
   createdAt: string;
   updatedAt: string;

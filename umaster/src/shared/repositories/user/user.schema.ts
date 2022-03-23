@@ -12,7 +12,7 @@ import { UserEntity } from './user.entity';
 const userSchema = new Schema(
   {
     email: { type: Schema.Types.String, unique: true },
-    fullName: Schema.Types.String,
+    password: Schema.Types.String,
     username: {
       type: Schema.Types.String,
     },

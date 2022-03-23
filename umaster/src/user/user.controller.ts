@@ -18,8 +18,8 @@ import {
   FindByIdsResponse,
   FindByUsernameRequest,
   FindByUsernameResponse,
-  GetOrCreateUserByEmailRequest,
-  GetOrCreateUserByEmailResponse,
+  CreateUserRequest,
+  CreateUserResponse,
   USER_SERVICE_NAME,
   UpdateProfileRequest,
   UpdateProfileResponse,
@@ -34,12 +34,8 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @GrpcMethod(USER_SERVICE_NAME)
-  async getOrCreateUserByEmail(
-    req: GetOrCreateUserByEmailRequest,
-  ): Promise<GetOrCreateUserByEmailResponse> {
-    const { user, isNewUser } = await this.userService.getOrCreateUserByEmail(
-      req.email,
-    );
+  async createUser(req: CreateUserRequest): Promise<CreateUserResponse> {
+    const { user } = await this.userService.createUserByEmail(req);
     if (!user) {
       throw new GrpcInternalException(`cannot process ${req.email}`, {
         code: USER_EXCEPTION_CODES.INTERNAL_EXCEPTION,
@@ -47,7 +43,6 @@ export class UserController {
     }
     return {
       user,
-      isNewUser,
     };
   }
 

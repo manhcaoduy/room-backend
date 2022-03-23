@@ -8,8 +8,8 @@ import {
 import { Observable, catchError, tap, throwError } from 'rxjs';
 import * as uuid from 'uuid';
 
-import { RoveStatuses } from '@app/core/framework/exceptions/exception.enum';
-import { RoveGrpcException } from '@app/core/framework/exceptions/grpc-exception';
+import { Statuses } from '@app/core/framework/exceptions/exception.enum';
+import { GrpcException } from '@app/core/framework/exceptions/grpc-exception';
 import { LoggerFactoryService } from '@app/core/utils/logger/logger-factory.service';
 import { LoggerService } from '@app/core/utils/logger/logger.service';
 
@@ -63,7 +63,7 @@ export class GrpcLoggingInterceptor implements NestInterceptor {
           `gRPC request to ${controllerName}.${handlerName} succeeded`,
           {
             ...loggingData,
-            status: RoveStatuses.Succeed,
+            status: Statuses.Succeed,
             durationMs: getDurationInMilliseconds(startTime),
           },
         );
@@ -72,11 +72,11 @@ export class GrpcLoggingInterceptor implements NestInterceptor {
         const dataLog = {
           ...loggingData,
           durationMs: getDurationInMilliseconds(startTime),
-          status: RoveStatuses.Failed,
+          status: Statuses.Failed,
         };
 
         const failedMsg = `gRPC request to ${controllerName}.${handlerName} failed`;
-        if (err instanceof RoveGrpcException) {
+        if (err instanceof GrpcException) {
           this.logger.error(failedMsg, dataLog, err);
         } else {
           this.logger.critical(failedMsg, dataLog, err);

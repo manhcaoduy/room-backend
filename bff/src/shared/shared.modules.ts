@@ -7,4 +7,4 @@ import { configModuleOptions } from './config/module-options';
   providers: [],
   exports: [],
 })
-export class SharedModules {}
+export class SharedModule {}

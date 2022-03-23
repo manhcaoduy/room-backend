@@ -9,13 +9,13 @@
  *
  */
 
-export interface MoshExceptionInfo {
+export interface ExceptionInfo {
   code?: string; // Rove-specific code.
   metadata?: any;
 }
 
-export interface RoveException {
+export interface Exception {
   name: string; // Title of the error.
   message: string; // Details of the error.
-  info: MoshExceptionInfo | null; // Extra info.
+  info: ExceptionInfo | null; // Extra info.
 }

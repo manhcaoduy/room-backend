@@ -1,25 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import slugify from 'slugify';
-import {
-  NumberDictionary,
-  adjectives,
-  animals,
-  colors,
-  uniqueNamesGenerator,
-} from 'unique-names-generator';
 
-import { caseInsensitiveOption } from '@app/core/dal/repositories/schema-default.options';
 import {
   GrpcAlreadyExistException,
   GrpcNotFoundException,
 } from '@app/core/framework/exceptions/grpc-exception';
-import { getUsernameFromEmail } from '@app/core/utils/email.utils';
 import { LoggerFactoryService } from '@app/core/utils/logger/logger-factory.service';
 import { LoggerService } from '@app/core/utils/logger/logger.service';
 
 import { USER_EXCEPTION_CODES } from '@app/microservice/exceptions/user.exception';
 import { UserEntity, UserRepository } from '../shared/repositories/user';
-import { UserProfile } from '@app/microservice/proto/shared/user/v1/user';
+import {
+  UserGender,
+  UserProfile,
+} from '@app/microservice/proto/shared/user/v1/user';
 
 @Injectable()
 export class UserService {
@@ -32,80 +25,28 @@ export class UserService {
     this.logger = loggerFactory.createLogger(UserService.name);
   }
 
-  async isUsernameAvailable(username: string): Promise<boolean> {
-    const exist = await this.userRepository.count(
-      { username },
-      { ...caseInsensitiveOption },
-    );
-    return !exist;
-  }
-
-  async getUniqueUsernameFromEmail(
-    email: string,
-  ): Promise<{ fullName: string; username: string }> {
-    const emailUsername = getUsernameFromEmail(email);
-    if (!emailUsername) {
-      this.logger.error(`can not get email user name from email ${email}`);
-      return this.getUniqueUsername();
-    }
-    const originUsername = slugify(emailUsername);
-    let username = originUsername;
-    let index = 0;
-    let exist = 0;
-
-    do {
-      if (index > 0) {
-        username = `${originUsername}-${index}`;
-      }
-      exist = await this.userRepository.count({ username });
-      index++;
-    } while (exist > 0);
-
-    return { fullName: username, username };
-  }
-
-  async getUniqueUsername(): Promise<{ fullName: string; username: string }> {
-    let fullName = '';
-    let username = '';
-    let exist: number;
-    do {
-      const numberDictionary = NumberDictionary.generate({
-        min: 100,
-        max: 9999,
+  async createUserByEmail(req: {
+    email: string;
+    password: string;
+    username: string;
+    gender: UserGender;
+  }): Promise<{ user: UserEntity }> {
+    let user = await this.userRepository.findOne({ email: req.email });
+    if (user) {
+      throw new GrpcAlreadyExistException(`user already exisited`, {
+        code: USER_EXCEPTION_CODES.USER_ALREADY_EXISTED,
+        metadata: { email: req.email },
       });
-      fullName = uniqueNamesGenerator({
-        dictionaries: [colors, adjectives, animals, numberDictionary],
-        length: 2,
-        separator: '',
-        style: 'capital',
-      });
-      username = slugify(fullName);
-      exist = await this.userRepository.count({ username });
-    } while (exist > 0);
-
-    return { fullName, username };
-  }
-
-  async getOrCreateUserByEmail(
-    email: string,
-  ): Promise<{ user: UserEntity; isNewUser: boolean }> {
-    let user = await this.userRepository.findOne({ email });
-    let isNewUser = false;
-    if (!user) {
-      isNewUser = true;
-      const { username, fullName } = await this.getUniqueUsernameFromEmail(
-        email,
-      );
-      // create user, save it to repo
-      user = new UserEntity();
-      user.username = username;
-      user.fullName = fullName;
-      user.email = email;
-
-      user = await this.userRepository.create(user);
     }
 
-    return { user, isNewUser };
+    user = new UserEntity();
+    user.email = req.email;
+    user.password = req.password;
+    user.username = req.username;
+    user.gender = req.gender;
+    user = await this.userRepository.create(user);
+
+    return { user };
   }
 
   async getUserById(userId: string): Promise<UserEntity> {

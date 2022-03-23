@@ -2,19 +2,21 @@
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { util, configure } from 'protobufjs/minimal';
 import * as Long from 'long';
-import { User, UserProfile } from '../../../shared/user/v1/user';
+import { UserGender, User, UserProfile } from '../../../shared/user/v1/user';
 import { Observable } from 'rxjs';
 import { Metadata } from '@grpc/grpc-js';
 
 export const protobufPackage = 'umaster.user.v1';
 
-export interface GetOrCreateUserByEmailRequest {
+export interface CreateUserRequest {
   email: string;
+  password: string;
+  username: string;
+  gender: UserGender;
 }
 
-export interface GetOrCreateUserByEmailResponse {
+export interface CreateUserResponse {
   user?: User;
-  isNewUser: boolean;
 }
 
 export interface FindByIdRequest {
@@ -61,10 +63,10 @@ export interface UpdateProfileResponse {
 export const UMASTER_USER_V1_PACKAGE_NAME = 'umaster.user.v1';
 
 export interface UserServiceClient {
-  getOrCreateUserByEmail(
-    request: GetOrCreateUserByEmailRequest,
+  createUser(
+    request: CreateUserRequest,
     metadata?: Metadata,
-  ): Observable<GetOrCreateUserByEmailResponse>;
+  ): Observable<CreateUserResponse>;
 
   findById(
     request: FindByIdRequest,
@@ -93,13 +95,13 @@ export interface UserServiceClient {
 }
 
 export interface UserServiceController {
-  getOrCreateUserByEmail(
-    request: GetOrCreateUserByEmailRequest,
+  createUser(
+    request: CreateUserRequest,
     metadata?: Metadata,
   ):
-    | Promise<GetOrCreateUserByEmailResponse>
-    | Observable<GetOrCreateUserByEmailResponse>
-    | GetOrCreateUserByEmailResponse;
+    | Promise<CreateUserResponse>
+    | Observable<CreateUserResponse>
+    | CreateUserResponse;
 
   findById(
     request: FindByIdRequest,
@@ -145,7 +147,7 @@ export interface UserServiceController {
 export function UserServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
-      'getOrCreateUserByEmail',
+      'createUser',
       'findById',
       'findByIds',
       'findByEmail',

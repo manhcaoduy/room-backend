@@ -5,8 +5,7 @@ package umaster.user.v1;
 import "shared/user/v1/user.proto";
 
 service UserService {
-  rpc GetOrCreateUserByEmail(GetOrCreateUserByEmailRequest)
-      returns (GetOrCreateUserByEmailResponse) {}
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
 
   rpc FindById(FindByIdRequest) returns (FindByIdResponse) {}
   rpc FindByIds(FindByIdsRequest) returns (FindByIdsResponse) {}
@@ -16,12 +15,14 @@ service UserService {
   rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileResponse) {}
 }
 
-message GetOrCreateUserByEmailRequest { string email = 1; }
-
-message GetOrCreateUserByEmailResponse {
-  shared.user.v1.User user = 1;
-  bool is_new_user = 2;
+message CreateUserRequest {
+  string email = 1;
+  string password = 2;
+  string username = 3;
+  shared.user.v1.UserGender gender = 4;
 }
+
+message CreateUserResponse { shared.user.v1.User user = 1; }
 
 message FindByIdRequest { string user_id = 1; }
 
