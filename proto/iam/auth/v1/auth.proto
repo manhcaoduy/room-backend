@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+package iam.auth.v1;
+
 import "shared/user/v1/user.proto";
 
 service AuthService {
@@ -28,7 +30,10 @@ message RegisterRequest {
   shared.user.v1.UserGender gender = 4;
 }
 
-message RegisterResponse { shared.user.v1.User user = 1; }
+message RegisterResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+}
 
 message LogoutRequest { string access_token = 1; }
 

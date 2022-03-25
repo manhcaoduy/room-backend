@@ -2,11 +2,11 @@
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { util, configure } from 'protobufjs/minimal';
 import * as Long from 'long';
-import { UserGender, User } from '../../../shared/user/v1/user';
+import { UserGender } from '../../../shared/user/v1/user';
 import { Observable } from 'rxjs';
 import { Metadata } from '@grpc/grpc-js';
 
-export const protobufPackage = '';
+export const protobufPackage = 'iam.auth.v1';
 
 export interface LoginRequest {
   email: string;
@@ -26,7 +26,8 @@ export interface RegisterRequest {
 }
 
 export interface RegisterResponse {
-  user?: User;
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface LogoutRequest {
@@ -56,7 +57,7 @@ export interface RefreshTokenResponse {
   refreshToken: string;
 }
 
-export const _PACKAGE_NAME = '';
+export const IAM_AUTH_V1_PACKAGE_NAME = 'iam.auth.v1';
 
 export interface AuthServiceClient {
   login(request: LoginRequest, metadata?: Metadata): Observable<LoginResponse>;
