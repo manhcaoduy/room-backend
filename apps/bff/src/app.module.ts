@@ -5,11 +5,13 @@ import { LoggerFactoryModule } from '@app/core/utils/logger/logger-factory.modul
 import { SharedModule } from './shared/shared.modules';
 import { HealthCheckModule } from './shared/health/healthcheck.module';
 import { HttpLoggingModule } from '@app/microservice/http/logging/http-logging.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     SharedModule,
     HealthCheckModule,
+    AuthModule,
     LoggerFactoryModule.forRootAsync({
       useFactory: (configService: ConfigService) => {
         const loggerConfig = configService.get('logger');
