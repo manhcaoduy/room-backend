@@ -11,4 +11,21 @@ export default () => ({
   httpInterceptor: {
     logResponse: parseBooleanConfig(process.env.HTTP_INTERCEPTOR_LOG_RESPONSE),
   },
+  redis: {
+    host: process.env.REDIS_HOST,
+    port: parseInt(process.env.REDIS_PORT, 10) || 6379,
+    pwd: process.env.REDIS_PWD,
+    db: parseInt(process.env.REDIS_DB_INDEX, 10) || 0,
+  },
+
+  // microservice
+  iam: {
+    grpcEndpoint: process.env.IAM_GRPC_ENDPOINT,
+  },
+  umaster: {
+    grpcEndpoint: process.env.UMASTER_GRPC_ENDPOINT,
+  },
+  grpcConfig: {
+    maxRetries: parseInt(process.env.GRPC_MAX_RETRIES, 10),
+  },
 });

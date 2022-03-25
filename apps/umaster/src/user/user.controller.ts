@@ -57,12 +57,6 @@ export class UserController {
   @GrpcMethod(USER_SERVICE_NAME)
   async findByEmail(req: FindByEmailRequest): Promise<FindByEmailResponse> {
     const user = await this.userService.getUserByEmail(req.email);
-    if (!user) {
-      throw new GrpcNotFoundException(`email not found`, {
-        code: USER_EXCEPTION_CODES.USER_NOT_FOUND,
-        metadata: { email: req.email },
-      });
-    }
     return {
       user,
     };
@@ -73,12 +67,6 @@ export class UserController {
     req: FindByUsernameRequest,
   ): Promise<FindByUsernameResponse> {
     const user = await this.userService.getUserByUsername(req.username);
-    if (!user) {
-      throw new GrpcNotFoundException(`username not found`, {
-        code: USER_EXCEPTION_CODES.USER_NOT_FOUND,
-        metadata: { username: req.username },
-      });
-    }
     return {
       user,
     };

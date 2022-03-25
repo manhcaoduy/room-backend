@@ -1,15 +1,22 @@
-import { Controller, Inject } from '@nestjs/common';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Body, Controller, Inject, Post, Req } from '@nestjs/common';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoggerFactoryService } from '@app/core/utils/logger/logger-factory.service';
 import { LoggerService } from '@app/core/utils/logger/logger.service';
+import { Request } from 'express';
 
 import {
   IamGrpcServiceAuthService,
   UMasterGrpcServiceUserService,
 } from '@app/microservice/constants/microservice';
 import { SWAGGER_ACCESS_TOKEN_KEY } from '@app/microservice/http/constants';
-import { AuthServiceClient } from '@app/microservice/proto/iam/auth/v1/auth';
 import { UserServiceClient } from '@app/microservice/proto/umaster/user/v1/user';
+import { lastValueFrom } from 'rxjs';
+import { LoginRequest, LoginResponse } from './dtos/login.dto';
+import { RegisterRequest, RegisterResponse } from './dtos/register.dto';
+import { AuthResponse } from './dtos/auth.dto';
+import { extractTokenFromAuthorization } from '@app/core/utils/jwt';
+import { HttpInvalidInputException } from '@app/core/framework/exceptions/http-exception';
+import { AuthServiceClient } from '@app/microservice/proto/iam/auth/v1/auth';
 
 @Controller('v1/auth')
 @ApiBearerAuth(SWAGGER_ACCESS_TOKEN_KEY)
@@ -29,20 +36,42 @@ export class AuthController {
     );
   }
 
-  // @Post('login')
-  // @ApiResponse({
-  //   status: 200,
-  //   type: LoginResponse,
-  //   description: '{ status: 1: data: {as type below} }',
-  // })
-  // async login(@Body() req: LoginRequest): Promise<LoginResponse> {
-  //   const { isNewUser } = await lastValueFrom(
-  //     this.authService.login(req),
-  //   );
-  //
-  //   return {
-  //     result: true,
-  //     isNewUser,
-  //   };
-  // }
+  @Post('login')
+  @ApiResponse({
+    status: 200,
+    type: LoginResponse,
+    description: '{ data: {as type below} }',
+  })
+  async login(@Body() req: LoginRequest): Promise<LoginResponse> {
+    const token = await lastValueFrom(this.authService.login(req));
+    return token;
+  }
+
+  @Post('register')
+  @ApiResponse({
+    status: 200,
+    type: RegisterResponse,
+    description: '{ data: {as type below} }',
+  })
+  async register(@Body() req: RegisterRequest): Promise<RegisterResponse> {
+    const token = await lastValueFrom(this.authService.register(req));
+    return token;
+  }
+
+  @Post('/refresh-token')
+  @ApiResponse({
+    status: 200,
+    type: AuthResponse,
+    description: '{ status: 1: data: {as type below} }',
+  })
+  async refreshToken(@Req() request: Request): Promise<AuthResponse> {
+    const { authorization } = request.headers;
+    const refreshToken = extractTokenFromAuthorization(authorization);
+    if (!refreshToken) {
+      throw new HttpInvalidInputException('refresh token is invalid');
+    }
+    const req = { refreshToken };
+    const token = await lastValueFrom(this.authService.refreshToken(req));
+    return token;
+  }
 }

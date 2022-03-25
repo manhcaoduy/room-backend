@@ -78,7 +78,7 @@ export class AuthService {
     const foundUser = await lastValueFrom(
       this.userClient.findByEmail({ email }),
     );
-    if (foundUser) {
+    if (foundUser.user) {
       throw new GrpcAlreadyExistException('user already existed', {
         code: USER_EXCEPTION_CODES.USER_ALREADY_EXISTED,
       });
