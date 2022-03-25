@@ -4,4 +4,5 @@ export const USER_EXCEPTION_CODES = {
   EMAIL_VERIFIED: 'email_verified',
   USERNAME_TAKEN: 'username_taken',
   INTERNAL_EXCEPTION: 'internal_exception',
+  WRONG_PASSWORD: 'wrong_password',
 };

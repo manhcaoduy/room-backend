@@ -1,31 +1,41 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "bff/src",
+  "sourceRoot": "apps/bff/src",
   "monorepo": true,
-  "root": "bff",
+  "root": "apps/bff",
   "compilerOptions": {
     "webpack": true,
-    "tsConfigPath": "bff/tsconfig.app.json",
+    "tsConfigPath": "apps/bff/tsconfig.app.json",
     "watchAssets": true
   },
   "projects": {
     "bff": {
       "type": "application",
-      "root": "bff",
+      "root": "apps/bff",
       "entryFile": "main",
-      "sourceRoot": "bff/src",
+      "sourceRoot": "apps/bff/src",
       "compilerOptions": {
-        "tsConfigPath": "bff/tsconfig.app.json",
+        "tsConfigPath": "apps/bff/tsconfig.app.json",
         "watchAssets": true
       }
     },
     "umaster": {
       "type": "application",
-      "root": "umaster",
+      "root": "apps/umaster",
       "entryFile": "main",
-      "sourceRoot": "umaster/src",
+      "sourceRoot": "apps/umaster/src",
       "compilerOptions": {
-        "tsConfigPath": "umaster/tsconfig.app.json",
+        "tsConfigPath": "apps/umaster/tsconfig.app.json",
+        "watchAssets": true
+      }
+    },
+    "iam": {
+      "type": "application",
+      "root": "apps/iam",
+      "entryFile": "main",
+      "sourceRoot": "apps/iam/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/iam/tsconfig.app.json",
         "watchAssets": true
       }
     }
