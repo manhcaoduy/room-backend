@@ -1,4 +1,4 @@
-import { Body, Controller, Inject, Post, Req } from '@nestjs/common';
+import { Body, Controller, Inject, Post, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoggerFactoryService } from '@app/core/utils/logger/logger-factory.service';
 import { LoggerService } from '@app/core/utils/logger/logger.service';
@@ -17,6 +17,13 @@ import { AuthResponse } from './dtos/auth.dto';
 import { extractTokenFromAuthorization } from '@app/core/utils/jwt';
 import { HttpInvalidInputException } from '@app/core/framework/exceptions/http-exception';
 import { AuthServiceClient } from '@app/microservice/proto/iam/auth/v1/auth';
+import { VerifyTokenResponse } from './dtos/verify.dto';
+import {
+  CurrentUser,
+  JwtAccessTokenClaims,
+  JwtAuthGuard,
+} from '@app/microservice/http/jwt-auth';
+import { LogoutResponse } from './dtos/logout.dto';
 
 @Controller('v1/auth')
 @ApiBearerAuth(SWAGGER_ACCESS_TOKEN_KEY)
@@ -73,5 +80,45 @@ export class AuthController {
     const req = { refreshToken };
     const token = await lastValueFrom(this.authService.refreshToken(req));
     return token;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/me')
+  @ApiResponse({
+    status: 200,
+    type: VerifyTokenResponse,
+    description: '{ status: 1: data: {as type below} }',
+  })
+  async verifyToken(
+    @CurrentUser() claims: JwtAccessTokenClaims,
+  ): Promise<VerifyTokenResponse> {
+    return {
+      email: claims.email,
+      username: claims.username,
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/logout')
+  @ApiResponse({
+    status: 200,
+    type: LogoutResponse,
+    description: '{ status: 1: data: {as type below} }',
+  })
+  async logout(
+    @CurrentUser() claims: JwtAccessTokenClaims,
+    @Req() request: Request,
+  ): Promise<LogoutResponse> {
+    const { authorization } = request.headers;
+    const accessToken = extractTokenFromAuthorization(authorization);
+    if (!accessToken) {
+      throw new HttpInvalidInputException('access token is invalid');
+    }
+    const req = { accessToken };
+    const resp = await lastValueFrom(this.authService.logout(req));
+
+    return {
+      result: resp.result,
+    };
   }
 }
