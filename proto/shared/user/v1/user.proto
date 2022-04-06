@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package shared.user.v1;
 
+enum UserWalletType { EVM = 0; }
+
 enum UserGender {
   ANOTHER = 0;
   FEMALE = 1;
@@ -19,6 +21,17 @@ message User {
   string password = 3;
   string username = 4;
   UserGender gender = 5;
+
+  string created_at = 99;
+  string updated_at = 100;
+}
+
+message UserWallet {
+  string id = 1;
+  string user_id = 2;
+  string address = 3;
+  UserWalletType type = 4;
+  string nonce = 5;
 
   string created_at = 99;
   string updated_at = 100;

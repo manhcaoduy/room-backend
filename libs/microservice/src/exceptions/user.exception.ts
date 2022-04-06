@@ -5,4 +5,6 @@ export const USER_EXCEPTION_CODES = {
   USERNAME_TAKEN: 'username_taken',
   INTERNAL_EXCEPTION: 'internal_exception',
   WRONG_PASSWORD: 'wrong_password',
+  SIGNATURE_NOT_MATCH: 'signature_not_match',
+  WALLET_TYPE_NOT_SUPPORT: 'wallet_type_not_support',
 };

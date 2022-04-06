@@ -4,6 +4,10 @@ import * as Long from 'long';
 
 export const protobufPackage = 'shared.user.v1';
 
+export enum UserWalletType {
+  EVM = 0,
+}
+
 export enum UserGender {
   ANOTHER = 0,
   FEMALE = 1,
@@ -21,6 +25,16 @@ export interface User {
   password: string;
   username: string;
   gender: UserGender;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UserWallet {
+  id: string;
+  userId: string;
+  address: string;
+  type: UserWalletType;
+  nonce: string;
   createdAt: string;
   updatedAt: string;
 }

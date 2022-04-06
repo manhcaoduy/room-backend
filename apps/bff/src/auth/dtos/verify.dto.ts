@@ -3,17 +3,6 @@ import { IsDefined, IsEmail, IsNotEmpty, IsString } from 'class-validator';
 import { Transform } from 'class-transformer';
 import { normalizeEmail } from '@app/core/utils/email.utils';
 
-export class VerifyTokenRequest {
-  @ApiProperty({
-    description: 'User access token',
-  })
-  accessToken: string;
-
-  constructor(partial: Partial<VerifyTokenRequest>) {
-    Object.assign(this, partial);
-  }
-}
-
 export class VerifyTokenResponse {
   @IsNotEmpty()
   @IsDefined()
