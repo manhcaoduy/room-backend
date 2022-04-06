@@ -35,6 +35,8 @@
     "class-validator": "^0.13.2",
     "email-validator": "^2.0.4",
     "eslint-plugin-unused-imports": "^2.0.0",
+    "eth-sig-util": "^3.0.1",
+    "ethereumjs-util": "^7.1.4",
     "google-auth-library": "^7.14.0",
     "husky": "^7.0.4",
     "ioredis": "^4.28.5",

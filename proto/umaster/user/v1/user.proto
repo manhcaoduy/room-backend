@@ -12,6 +12,16 @@ service UserService {
   rpc FindByEmail(FindByEmailRequest) returns (FindByEmailResponse) {}
   rpc FindByUsername(FindByUsernameRequest) returns (FindByUsernameResponse) {}
 
+  rpc FindByWalletAddress(FindByWalletAddressRequest)
+      returns (FindByWalletAddressResponse) {}
+  rpc GenerateNonceMessage(GenerateNonceMessageRequest)
+      returns (GenerateNonceMessageResponse) {}
+  rpc ConnectWalletAddress(ConnectWalletAddressRequest)
+      returns (ConnectWalletAddressResponse) {}
+  rpc GetWallets(GetWalletsRequest) returns (GetWalletsResponse) {}
+  rpc DisconnectWalletAddress(DisconnectWalletAddressRequest)
+      returns (DisconnectWalletAddressResponse) {}
+
   rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileResponse) {}
 }
 
@@ -46,3 +56,40 @@ message UpdateProfileRequest {
 }
 
 message UpdateProfileResponse { shared.user.v1.User user = 1; }
+
+message FindByWalletAddressRequest { string wallet_address = 1; }
+
+message FindByWalletAddressResponse { shared.user.v1.User user = 1; }
+
+message GenerateNonceMessageRequest {
+  string user_id = 1;
+  string wallet_address = 2;
+  shared.user.v1.UserWalletType type = 3;
+}
+
+message GenerateNonceMessageResponse { string message = 1; }
+
+message ConnectWalletAddressRequest {
+  string user_id = 1;
+  string wallet_address = 2;
+  shared.user.v1.UserWalletType type = 3;
+  string signature = 4;
+}
+
+message ConnectWalletAddressResponse {
+  shared.user.v1.UserWallet user_wallet = 1;
+}
+
+message DisconnectWalletAddressRequest {
+  string user_id = 1;
+  string wallet_address = 2;
+  shared.user.v1.UserWalletType type = 3;
+}
+
+message DisconnectWalletAddressResponse { bool result = 1; }
+
+message GetWalletsRequest { string user_id = 1; }
+
+message GetWalletsResponse {
+  repeated shared.user.v1.UserWallet user_wallets = 1;
+}

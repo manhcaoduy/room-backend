@@ -2,7 +2,13 @@
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { util, configure } from 'protobufjs/minimal';
 import * as Long from 'long';
-import { UserGender, User, UserProfile } from '../../../shared/user/v1/user';
+import {
+  UserGender,
+  User,
+  UserProfile,
+  UserWalletType,
+  UserWallet,
+} from '../../../shared/user/v1/user';
 import { Observable } from 'rxjs';
 import { Metadata } from '@grpc/grpc-js';
 
@@ -60,6 +66,53 @@ export interface UpdateProfileResponse {
   user?: User;
 }
 
+export interface FindByWalletAddressRequest {
+  walletAddress: string;
+}
+
+export interface FindByWalletAddressResponse {
+  user?: User;
+}
+
+export interface GenerateNonceMessageRequest {
+  userId: string;
+  walletAddress: string;
+  type: UserWalletType;
+}
+
+export interface GenerateNonceMessageResponse {
+  message: string;
+}
+
+export interface ConnectWalletAddressRequest {
+  userId: string;
+  walletAddress: string;
+  type: UserWalletType;
+  signature: string;
+}
+
+export interface ConnectWalletAddressResponse {
+  userWallet?: UserWallet;
+}
+
+export interface DisconnectWalletAddressRequest {
+  userId: string;
+  walletAddress: string;
+  type: UserWalletType;
+}
+
+export interface DisconnectWalletAddressResponse {
+  result: boolean;
+}
+
+export interface GetWalletsRequest {
+  userId: string;
+}
+
+export interface GetWalletsResponse {
+  userWallets: UserWallet[];
+}
+
 export const UMASTER_USER_V1_PACKAGE_NAME = 'umaster.user.v1';
 
 export interface UserServiceClient {
@@ -87,6 +140,31 @@ export interface UserServiceClient {
     request: FindByUsernameRequest,
     metadata?: Metadata,
   ): Observable<FindByUsernameResponse>;
+
+  findByWalletAddress(
+    request: FindByWalletAddressRequest,
+    metadata?: Metadata,
+  ): Observable<FindByWalletAddressResponse>;
+
+  generateNonceMessage(
+    request: GenerateNonceMessageRequest,
+    metadata?: Metadata,
+  ): Observable<GenerateNonceMessageResponse>;
+
+  connectWalletAddress(
+    request: ConnectWalletAddressRequest,
+    metadata?: Metadata,
+  ): Observable<ConnectWalletAddressResponse>;
+
+  getWallets(
+    request: GetWalletsRequest,
+    metadata?: Metadata,
+  ): Observable<GetWalletsResponse>;
+
+  disconnectWalletAddress(
+    request: DisconnectWalletAddressRequest,
+    metadata?: Metadata,
+  ): Observable<DisconnectWalletAddressResponse>;
 
   updateProfile(
     request: UpdateProfileRequest,
@@ -135,6 +213,46 @@ export interface UserServiceController {
     | Observable<FindByUsernameResponse>
     | FindByUsernameResponse;
 
+  findByWalletAddress(
+    request: FindByWalletAddressRequest,
+    metadata?: Metadata,
+  ):
+    | Promise<FindByWalletAddressResponse>
+    | Observable<FindByWalletAddressResponse>
+    | FindByWalletAddressResponse;
+
+  generateNonceMessage(
+    request: GenerateNonceMessageRequest,
+    metadata?: Metadata,
+  ):
+    | Promise<GenerateNonceMessageResponse>
+    | Observable<GenerateNonceMessageResponse>
+    | GenerateNonceMessageResponse;
+
+  connectWalletAddress(
+    request: ConnectWalletAddressRequest,
+    metadata?: Metadata,
+  ):
+    | Promise<ConnectWalletAddressResponse>
+    | Observable<ConnectWalletAddressResponse>
+    | ConnectWalletAddressResponse;
+
+  getWallets(
+    request: GetWalletsRequest,
+    metadata?: Metadata,
+  ):
+    | Promise<GetWalletsResponse>
+    | Observable<GetWalletsResponse>
+    | GetWalletsResponse;
+
+  disconnectWalletAddress(
+    request: DisconnectWalletAddressRequest,
+    metadata?: Metadata,
+  ):
+    | Promise<DisconnectWalletAddressResponse>
+    | Observable<DisconnectWalletAddressResponse>
+    | DisconnectWalletAddressResponse;
+
   updateProfile(
     request: UpdateProfileRequest,
     metadata?: Metadata,
@@ -152,6 +270,11 @@ export function UserServiceControllerMethods() {
       'findByIds',
       'findByEmail',
       'findByUsername',
+      'findByWalletAddress',
+      'generateNonceMessage',
+      'connectWalletAddress',
+      'getWallets',
+      'disconnectWalletAddress',
       'updateProfile',
     ];
     for (const method of grpcMethods) {

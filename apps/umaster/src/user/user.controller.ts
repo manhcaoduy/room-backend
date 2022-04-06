@@ -23,6 +23,14 @@ import {
   USER_SERVICE_NAME,
   UpdateProfileRequest,
   UpdateProfileResponse,
+  GenerateNonceMessageRequest,
+  GenerateNonceMessageResponse,
+  ConnectWalletAddressRequest,
+  ConnectWalletAddressResponse,
+  DisconnectWalletAddressRequest,
+  DisconnectWalletAddressResponse,
+  GetWalletsRequest,
+  GetWalletsResponse,
 } from '@app/microservice/proto/umaster/user/v1/user';
 
 import { UserService } from './user.service';
@@ -101,6 +109,57 @@ export class UserController {
     }
     return {
       users,
+    };
+  }
+
+  @GrpcMethod(USER_SERVICE_NAME)
+  async generateNonceMessage(
+    req: GenerateNonceMessageRequest,
+  ): Promise<GenerateNonceMessageResponse> {
+    const { message } = await this.userService.generateNonceMessage(
+      req.userId,
+      req.walletAddress,
+      req.type,
+    );
+    return {
+      message,
+    };
+  }
+
+  @GrpcMethod(USER_SERVICE_NAME)
+  async connectWalletAddress(
+    req: ConnectWalletAddressRequest,
+  ): Promise<ConnectWalletAddressResponse> {
+    const { userWallet } = await this.userService.connectWalletAddress(
+      req.userId,
+      req.walletAddress,
+      req.type,
+      req.signature,
+    );
+    return {
+      userWallet,
+    };
+  }
+
+  @GrpcMethod(USER_SERVICE_NAME)
+  async disconnectWalletAddress(
+    req: DisconnectWalletAddressRequest,
+  ): Promise<DisconnectWalletAddressResponse> {
+    const { result } = await this.userService.disconnectWalletAddress(
+      req.userId,
+      req.walletAddress,
+      req.type,
+    );
+    return {
+      result,
+    };
+  }
+
+  @GrpcMethod(USER_SERVICE_NAME)
+  async getWallets(req: GetWalletsRequest): Promise<GetWalletsResponse> {
+    const { userWallets } = await this.userService.getWallets(req.userId);
+    return {
+      userWallets,
     };
   }
 }
