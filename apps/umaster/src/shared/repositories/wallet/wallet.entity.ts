@@ -1,34 +1,36 @@
 import { Exclude, Expose } from 'class-transformer';
 import 'reflect-metadata';
-
-import { UserWalletType } from '@app/microservice/proto/shared/user/v1/user';
+import { WalletNetwork } from '@app/microservice/proto/shared/user/v1/user';
 
 @Exclude()
-export class UserWalletEntity {
+export class WalletEntity {
   @Expose({ name: '_id' })
   id: string;
-
-  @Expose()
-  userId: string;
 
   @Expose()
   address: string;
 
   @Expose()
-  type: UserWalletType;
+  network: WalletNetwork;
 
   @Expose()
-  isVerified: boolean;
+  isOwned: boolean;
+
+  @Expose()
+  userId: string;
 
   @Expose()
   nonce: string;
+
+  @Expose()
+  isVerified: boolean;
 
   @Expose()
   createdAt: string;
   @Expose()
   updatedAt: string;
 
-  public constructor(init?: Partial<UserWalletEntity>) {
+  public constructor(init?: Partial<WalletEntity>) {
     Object.assign(this, init);
   }
 }

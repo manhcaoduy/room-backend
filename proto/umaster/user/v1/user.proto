@@ -29,7 +29,6 @@ message CreateUserRequest {
   string email = 1;
   string password = 2;
   string username = 3;
-  shared.user.v1.UserGender gender = 4;
 }
 
 message CreateUserResponse { shared.user.v1.User user = 1; }
@@ -64,7 +63,7 @@ message FindByWalletAddressResponse { shared.user.v1.User user = 1; }
 message GenerateNonceMessageRequest {
   string user_id = 1;
   string wallet_address = 2;
-  shared.user.v1.UserWalletType type = 3;
+  shared.user.v1.WalletNetwork network = 3;
 }
 
 message GenerateNonceMessageResponse { string message = 1; }
@@ -72,24 +71,20 @@ message GenerateNonceMessageResponse { string message = 1; }
 message ConnectWalletAddressRequest {
   string user_id = 1;
   string wallet_address = 2;
-  shared.user.v1.UserWalletType type = 3;
+  shared.user.v1.WalletNetwork network = 3;
   string signature = 4;
 }
 
-message ConnectWalletAddressResponse {
-  shared.user.v1.UserWallet user_wallet = 1;
-}
+message ConnectWalletAddressResponse { shared.user.v1.Wallet user_wallet = 1; }
 
 message DisconnectWalletAddressRequest {
   string user_id = 1;
   string wallet_address = 2;
-  shared.user.v1.UserWalletType type = 3;
+  shared.user.v1.WalletNetwork network = 3;
 }
 
-message DisconnectWalletAddressResponse { bool result = 1; }
+message DisconnectWalletAddressResponse { shared.user.v1.Wallet wallet = 1; }
 
 message GetWalletsRequest { string user_id = 1; }
 
-message GetWalletsResponse {
-  repeated shared.user.v1.UserWallet user_wallets = 1;
-}
+message GetWalletsResponse { repeated shared.user.v1.Wallet user_wallets = 1; }

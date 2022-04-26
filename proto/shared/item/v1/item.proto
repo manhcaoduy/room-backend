@@ -3,14 +3,16 @@ syntax = "proto3";
 package shared.item.v1;
 
 enum ItemType {
-  IMAGE = 0;
-  VIDEO = 1;
-  GIF = 2;
+  USER = 0;
+  WALLET = 1;
 }
 
 message Item {
   string id = 1;
-  string user_id = 2;
+  string owner = 2;
   ItemType type = 3;
-  string link = 4;
+  string metadataIpfs = 4;
+
+  string created_at = 99;
+  string updated_at = 100;
 }

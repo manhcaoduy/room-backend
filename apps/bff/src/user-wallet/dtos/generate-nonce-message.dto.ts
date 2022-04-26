@@ -3,7 +3,7 @@ import { IsDefined, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 import { getEnumNumberValues } from '@app/core/utils';
 
-import { UserWalletType } from '@app/microservice/proto/shared/user/v1/user';
+import { WalletNetwork } from '@app/microservice/proto/shared/user/v1/user';
 
 export class GenerateNonceMessageRequest {
   @IsString()
@@ -15,13 +15,13 @@ export class GenerateNonceMessageRequest {
   walletAddress: string;
 
   @IsDefined()
-  @IsEnum(UserWalletType)
+  @IsEnum(WalletNetwork)
   @ApiProperty({
-    description: `User wallet type ${getEnumNumberValues(UserWalletType)
-      .map((t) => `${t}: ${UserWalletType[t]}`)
+    description: `User wallet type ${getEnumNumberValues(WalletNetwork)
+      .map((t) => `${t}: ${WalletNetwork[t]}`)
       .join(', ')}`,
   })
-  type: UserWalletType;
+  network: WalletNetwork;
 
   constructor(partial: Partial<GenerateNonceMessageResponse>) {
     Object.assign(this, partial);

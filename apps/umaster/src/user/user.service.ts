@@ -12,14 +12,10 @@ import { LoggerService } from '@app/core/utils/logger/logger.service';
 import { USER_EXCEPTION_CODES } from '@app/microservice/exceptions/user.exception';
 import { UserEntity, UserRepository } from '../shared/repositories/user';
 import {
-  UserGender,
   UserProfile,
-  UserWalletType,
+  WalletNetwork,
 } from '@app/microservice/proto/shared/user/v1/user';
-import {
-  UserWalletEntity,
-  UserWalletRepository,
-} from '../shared/repositories/user-wallet';
+import { WalletEntity, WalletRepository } from '../shared/repositories/wallet';
 import { randU32Sync } from '../shared/utils/random.util';
 import * as sigUtil from 'eth-sig-util';
 import * as ethUtil from 'ethereumjs-util';
@@ -30,7 +26,7 @@ export class UserService {
 
   constructor(
     private userRepository: UserRepository,
-    private userWalletRepository: UserWalletRepository,
+    private walletRepository: WalletRepository,
     private readonly loggerFactory: LoggerFactoryService,
   ) {
     this.logger = loggerFactory.createLogger(UserService.name);
@@ -40,7 +36,6 @@ export class UserService {
     email: string;
     password: string;
     username: string;
-    gender: UserGender;
   }): Promise<{ user: UserEntity }> {
     let user = await this.userRepository.findOne({ email: req.email });
     if (user) {
@@ -54,7 +49,6 @@ export class UserService {
     user.email = req.email;
     user.password = req.password;
     user.username = req.username;
-    user.gender = req.gender;
     user = await this.userRepository.create(user);
 
     return { user };
@@ -107,67 +101,62 @@ export class UserService {
   async generateNonceMessage(
     userId: string,
     walletAddress: string,
-    type: UserWalletType,
+    network: WalletNetwork,
   ): Promise<{ message: string }> {
     const user = await this.getUserById(userId);
-    let userWallet = await this.userWalletRepository.findOne({
+    const wallet = await this.walletRepository.getOrCreate({
       address: walletAddress,
-      type,
+      network,
     });
-    if (userWallet) {
-      if (userWallet.isVerified && userWallet.userId !== user.id) {
-        throw new GrpcPermissionDeniedException(
-          `Wallet address is existed & owned by another user`,
-          {
-            metadata: {
-              walletAddress,
-              walletUserId: userWallet.userId,
-              userId: user.id,
-            },
+    if (wallet.isVerified && wallet.isOwned && wallet.userId !== user.id) {
+      throw new GrpcPermissionDeniedException(
+        `Wallet address is existed & owned by another user`,
+        {
+          metadata: {
+            walletAddress,
+            walletUserId: wallet.userId,
+            userId: user.id,
           },
-        );
-      }
-
-      const nonce = `${randU32Sync()}`;
-
-      await this.userWalletRepository.update(
-        { _id: userWallet.id },
-        { nonce, isVerified: false, userId },
+        },
       );
-
-      return { message: this.getNonceMessage(nonce) };
     }
 
-    userWallet = new UserWalletEntity({
-      userId,
-      type,
+    const userWallet = new WalletEntity({
+      network,
       address: walletAddress,
+      isOwned: true,
+      userId,
+      isVerified: false,
       nonce: `${randU32Sync()}`,
     });
 
-    userWallet = await this.userWalletRepository.create(userWallet);
-
+    await this.walletRepository.update(wallet, userWallet);
     return { message: this.getNonceMessage(userWallet.nonce) };
   }
 
   async connectWalletAddress(
     userId: string,
     walletAddress: string,
-    type: UserWalletType,
+    network: WalletNetwork,
     signature: string,
-  ): Promise<{ userWallet: UserWalletEntity; user: UserEntity }> {
-    const user = await this.getUserById(userId);
-    const userWallet = await this.userWalletRepository.findOne({
+  ): Promise<WalletEntity> {
+    const wallet = await this.walletRepository.findOne({
       address: walletAddress,
-      type,
+      network,
     });
-    if (!userWallet) {
-      throw new GrpcNotFoundException('User wallet is not found', {
-        code: USER_EXCEPTION_CODES.USER_NOT_FOUND,
+    if (!wallet) {
+      throw new GrpcNotFoundException('Wallet is not found', {
+        code: USER_EXCEPTION_CODES.WALLET_NOT_FOUND,
       });
     }
 
-    if (userWallet.userId !== user.id) {
+    if (!wallet.isOwned) {
+      throw new GrpcNotFoundException('User wallet is not owned by any user', {
+        code: USER_EXCEPTION_CODES.WALLET_NOT_OWNED,
+      });
+    }
+
+    if (wallet.userId !== userId) {
       throw new GrpcPermissionDeniedException(
         `Wallet address is owned by another user`,
         {
@@ -178,10 +167,10 @@ export class UserService {
       );
     }
 
-    const msg = this.getNonceMessage(userWallet.nonce);
+    const msg = this.getNonceMessage(wallet.nonce);
 
-    switch (userWallet.type) {
-      case UserWalletType.EVM: {
+    switch (wallet.network) {
+      case WalletNetwork.EVM: {
         if (!this.verifyEthereumSignature(walletAddress, signature, msg)) {
           throw new GrpcInvalidArgumentException(
             'Provided signature does not match',
@@ -204,43 +193,35 @@ export class UserService {
       }
     }
 
-    await this.userWalletRepository.update(
-      { _id: userWallet.id },
+    const updatedWallet = await this.walletRepository.updateOneAndReturn(
+      { _id: wallet.id },
       { nonce: `${randU32Sync()}`, isVerified: true },
     );
-    // if (!hasVerifyStatus(user.verifyStatus, UserVerifyStatusType.Wallet)) {
-    //   const verifyStatus = updateVerifyStatus(
-    //     user.verifyStatus,
-    //     UserVerifyStatusType.Wallet,
-    //   );
-    //   user = await this.userRepository.updateOneAndReturn(
-    //     { _id: user.id },
-    //     { verifyStatus },
-    //   );
-    // }
-    return {
-      userWallet,
-      user,
-    };
+    return updatedWallet;
   }
 
   async disconnectWalletAddress(
     userId: string,
     walletAddress: string,
-    type: UserWalletType,
-  ): Promise<{ result: boolean }> {
-    const user = await this.getUserById(userId);
-    const userWallet = await this.userWalletRepository.findOne({
+    network: WalletNetwork,
+  ): Promise<WalletEntity> {
+    const wallet = await this.walletRepository.findOne({
       address: walletAddress,
-      type,
+      network,
     });
-    if (!userWallet) {
+    if (!wallet) {
       throw new GrpcNotFoundException('User wallet is not found', {
         code: USER_EXCEPTION_CODES.USER_NOT_FOUND,
       });
     }
 
-    if (userWallet.userId !== user.id) {
+    if (!wallet.isOwned) {
+      throw new GrpcNotFoundException('User wallet is not owned by any user', {
+        code: USER_EXCEPTION_CODES.WALLET_NOT_OWNED,
+      });
+    }
+
+    if (wallet.userId !== userId) {
       throw new GrpcPermissionDeniedException(
         `Wallet address is owned by another user`,
         {
@@ -251,17 +232,21 @@ export class UserService {
       );
     }
 
-    await this.userWalletRepository.delete({ _id: userWallet.id });
-
-    return {
-      result: true,
-    };
+    const updatedWallet = await this.walletRepository.updateOneAndReturn(
+      { _id: wallet.id },
+      {
+        nonce: `${randU32Sync()}`,
+        isVerified: true,
+        isOwned: false,
+        userId: '',
+      },
+    );
+    return updatedWallet;
   }
 
-  async getWallets(
-    userId: string,
-  ): Promise<{ userWallets: UserWalletEntity[] }> {
-    const userWallets = await this.userWalletRepository.find({
+  async getWallets(userId: string): Promise<{ userWallets: WalletEntity[] }> {
+    const userWallets = await this.walletRepository.find({
+      isOwned: true,
       userId,
       isVerified: true,
     });

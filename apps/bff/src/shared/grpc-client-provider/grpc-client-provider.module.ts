@@ -2,12 +2,14 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import {
+  EMasterGrpcService,
   IamGrpcService,
   UMasterGrpcService,
 } from '@app/microservice/constants/microservice';
 import { ClientGrpcModule } from '@app/microservice/grpc/grpc-client/client-grpc.module';
 import { IamGrpcOptions } from '@app/microservice/grpc/grpc-options/iam.option';
 import { UMasterGrpcOptions } from '@app/microservice/grpc/grpc-options/umaster.option';
+import { EmasterGrpcOptions } from '@app/microservice/grpc/grpc-options/emaster.option';
 
 @Module({
   imports: [
@@ -43,6 +45,28 @@ import { UMasterGrpcOptions } from '@app/microservice/grpc/grpc-options/umaster.
           );
           const maxRetries = configService.get<number>('grpcConfig.maxRetries');
           const grpcOptions = Object.assign({}, UMasterGrpcOptions, {
+            url: grpcEndpoint,
+          });
+          return {
+            options: grpcOptions,
+            maxRetries,
+          };
+        },
+        inject: [ConfigService],
+      },
+    ),
+    ClientGrpcModule.forRootAsync(
+      {
+        microservice: EMasterGrpcService,
+        usingHttpError: true,
+      },
+      {
+        useFactory: (configService: ConfigService) => {
+          const grpcEndpoint = configService.get<string>(
+            'emaster.grpcEndpoint',
+          );
+          const maxRetries = configService.get<number>('grpcConfig.maxRetries');
+          const grpcOptions = Object.assign({}, EmasterGrpcOptions, {
             url: grpcEndpoint,
           });
           return {

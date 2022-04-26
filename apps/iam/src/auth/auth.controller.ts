@@ -37,7 +37,6 @@ export class AuthController {
       request.email,
       request.password,
       request.username,
-      request.gender,
     );
     return token;
   }

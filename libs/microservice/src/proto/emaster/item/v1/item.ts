@@ -2,112 +2,88 @@
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { util, configure } from 'protobufjs/minimal';
 import * as Long from 'long';
-import { Item, ItemType } from '../../../shared/item/v1/item';
+import { ItemType, Item } from '../../../shared/item/v1/item';
 import { Observable } from 'rxjs';
 import { Metadata } from '@grpc/grpc-js';
 
 export const protobufPackage = 'emaster.item.v1';
 
-export interface GetUserItemRequest {
+export interface CreateItemRequest {
   userId: string;
-}
-
-export interface GetUserItemResponse {
-  items: Item[];
-}
-
-export interface AddUserItemRequest {
-  userId: string;
-  item?: Item;
-}
-
-export interface AddUserItemResponse {
-  item?: Item;
-}
-
-export interface RemoveUserItemRequest {
-  item?: Item;
-}
-
-export interface RemoveUserItemResponse {
-  item?: Item;
-}
-
-export interface CreateUserItemRequest {
   type: ItemType;
-  link: string;
+  metadataIpfs: string;
 }
 
-export interface CreateUserItemResponse {
+export interface CreateItemResponse {
+  item?: Item;
+}
+
+export interface MintItemRequest {
+  walletId: string;
+  itemId: string;
+}
+
+export interface MintItemResponse {
+  item?: Item;
+}
+
+export interface ChangeOwnerItemRequest {
+  walletId: string;
+  itemId: string;
+}
+
+export interface ChangeOwnerItemResponse {
   item?: Item;
 }
 
 export const EMASTER_ITEM_V1_PACKAGE_NAME = 'emaster.item.v1';
 
 export interface ItemServiceClient {
-  getUserItem(
-    request: GetUserItemRequest,
+  createItem(
+    request: CreateItemRequest,
     metadata?: Metadata,
-  ): Observable<GetUserItemResponse>;
+  ): Observable<CreateItemResponse>;
 
-  addUserItem(
-    request: AddUserItemRequest,
+  mintItem(
+    request: MintItemRequest,
     metadata?: Metadata,
-  ): Observable<AddUserItemResponse>;
+  ): Observable<MintItemResponse>;
 
-  removeUserItem(
-    request: RemoveUserItemRequest,
+  changeOwnerItem(
+    request: ChangeOwnerItemRequest,
     metadata?: Metadata,
-  ): Observable<RemoveUserItemResponse>;
-
-  createUserItem(
-    request: CreateUserItemRequest,
-    metadata?: Metadata,
-  ): Observable<CreateUserItemResponse>;
+  ): Observable<ChangeOwnerItemResponse>;
 }
 
 export interface ItemServiceController {
-  getUserItem(
-    request: GetUserItemRequest,
+  createItem(
+    request: CreateItemRequest,
     metadata?: Metadata,
   ):
-    | Promise<GetUserItemResponse>
-    | Observable<GetUserItemResponse>
-    | GetUserItemResponse;
+    | Promise<CreateItemResponse>
+    | Observable<CreateItemResponse>
+    | CreateItemResponse;
 
-  addUserItem(
-    request: AddUserItemRequest,
+  mintItem(
+    request: MintItemRequest,
     metadata?: Metadata,
   ):
-    | Promise<AddUserItemResponse>
-    | Observable<AddUserItemResponse>
-    | AddUserItemResponse;
+    | Promise<MintItemResponse>
+    | Observable<MintItemResponse>
+    | MintItemResponse;
 
-  removeUserItem(
-    request: RemoveUserItemRequest,
+  changeOwnerItem(
+    request: ChangeOwnerItemRequest,
     metadata?: Metadata,
   ):
-    | Promise<RemoveUserItemResponse>
-    | Observable<RemoveUserItemResponse>
-    | RemoveUserItemResponse;
-
-  createUserItem(
-    request: CreateUserItemRequest,
-    metadata?: Metadata,
-  ):
-    | Promise<CreateUserItemResponse>
-    | Observable<CreateUserItemResponse>
-    | CreateUserItemResponse;
+    | Promise<ChangeOwnerItemResponse>
+    | Observable<ChangeOwnerItemResponse>
+    | ChangeOwnerItemResponse;
 }
 
 export function ItemServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = [
-      'getUserItem',
-      'addUserItem',
-      'removeUserItem',
-      'createUserItem',
-    ];
+    const grpcMethods: string[] = ['createItem', 'mintItem', 'changeOwnerItem'];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(
         constructor.prototype,

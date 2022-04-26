@@ -15,6 +15,7 @@ import { HttpExceptionFilter } from '@app/core/framework/exceptions/http-excepti
 import { HttpLoggingInterceptor } from '@app/microservice/http/logging/http-logging-interceptor.service';
 import { LoggerFactoryService } from '@app/core/utils/logger/logger-factory.service';
 import { ConfigService } from '@nestjs/config';
+import { ResponseTransformerInterceptor } from '@app/microservice/http/response-transfromer';
 
 function setupSwagger(app: any) {
   // swagger
@@ -59,6 +60,7 @@ async function bootstrap() {
   });
   app.use(RequestIdMiddleware);
   app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalInterceptors(new ResponseTransformerInterceptor([]));
 
   const httpLoggingInterceptor = app.get(HttpLoggingInterceptor);
   app.useGlobalInterceptors(httpLoggingInterceptor);

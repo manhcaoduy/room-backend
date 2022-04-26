@@ -25,6 +25,9 @@ export default () => ({
   umaster: {
     grpcEndpoint: process.env.UMASTER_GRPC_ENDPOINT,
   },
+  emaster: {
+    grpcEndpoint: process.env.EMASTER_GRPC_ENDPOINT,
+  },
   grpcConfig: {
     maxRetries: parseInt(process.env.GRPC_MAX_RETRIES, 10),
   },

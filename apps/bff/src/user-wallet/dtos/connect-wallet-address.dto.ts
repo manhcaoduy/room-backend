@@ -3,9 +3,9 @@ import { IsDefined, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 import { getEnumNumberValues } from '@app/core/utils';
 
-import { UserWalletType } from '@app/microservice/proto/shared/user/v1/user';
+import { WalletNetwork } from '@app/microservice/proto/shared/user/v1/user';
 
-import { UserWalletDto } from './user-wallet.dto';
+import { WalletDto } from './user-wallet.dto';
 
 export class ConnectWalletAddressRequest {
   @IsString()
@@ -17,14 +17,14 @@ export class ConnectWalletAddressRequest {
   walletAddress: string;
 
   @IsDefined()
-  @IsEnum(UserWalletType)
+  @IsEnum(WalletNetwork)
   @ApiProperty({
-    description: `User wallet type ${getEnumNumberValues(UserWalletType)
-      .map((t) => `${t}: ${UserWalletType[t]}`)
+    description: `Wallet network ${getEnumNumberValues(WalletNetwork)
+      .map((t) => `${t}: ${WalletNetwork[t]}`)
       .join(', ')}`,
     type: Number,
   })
-  type: UserWalletType;
+  network: WalletNetwork;
 
   @ApiProperty({
     description: 'signature',
@@ -43,7 +43,7 @@ export class ConnectWalletAddressResponse {
   @ApiProperty({
     description: 'user wallet info',
   })
-  userWallet: UserWalletDto;
+  userWallet: WalletDto;
 
   constructor(partial: Partial<ConnectWalletAddressResponse>) {
     Object.assign(this, partial);

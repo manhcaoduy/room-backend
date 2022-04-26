@@ -7,6 +7,7 @@ import { HealthCheckModule } from './shared/health/healthcheck.module';
 import { HttpLoggingModule } from '@app/microservice/http/logging/http-logging.module';
 import { AuthModule } from './auth/auth.module';
 import { UserWalletModule } from './user-wallet/user-wallet.module';
+import { ItemModule } from './item/item.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UserWalletModule } from './user-wallet/user-wallet.module';
     HealthCheckModule,
     AuthModule,
     UserWalletModule,
+    ItemModule,
     LoggerFactoryModule.forRootAsync({
       useFactory: (configService: ConfigService) => {
         const loggerConfig = configService.get('logger');

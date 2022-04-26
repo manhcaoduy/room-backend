@@ -5,30 +5,30 @@ package emaster.item.v1;
 import "shared/item/v1/item.proto";
 
 service ItemService {
-  rpc GetUserItem(GetUserItemRequest) returns (GetUserItemResponse) {}
-  rpc AddUserItem(AddUserItemRequest) returns (AddUserItemResponse) {}
-  rpc RemoveUserItem(RemoveUserItemRequest) returns (RemoveUserItemResponse) {}
-  rpc CreateUserItem(CreateUserItemRequest) returns (CreateUserItemResponse) {}
+  rpc CreateItem(CreateItemRequest) returns (CreateItemResponse) {}
+  rpc MintItem(MintItemRequest) returns (MintItemResponse) {}
+  rpc ChangeOwnerItem(ChangeOwnerItemRequest)
+      returns (ChangeOwnerItemResponse) {}
 }
 
-message GetUserItemRequest { string user_id = 1; }
-
-message GetUserItemResponse { repeated shared.item.v1.Item items = 1; }
-
-message AddUserItemRequest {
+message CreateItemRequest {
   string user_id = 1;
-  shared.item.v1.Item item = 2;
+  shared.item.v1.ItemType type = 2;
+  string metadataIpfs = 3;
 }
 
-message AddUserItemResponse { shared.item.v1.Item item = 1; }
+message CreateItemResponse { shared.item.v1.Item item = 1; }
 
-message RemoveUserItemRequest { shared.item.v1.Item item = 1; }
-
-message RemoveUserItemResponse { shared.item.v1.Item item = 1; }
-
-message CreateUserItemRequest {
-  shared.item.v1.ItemType type = 1;
-  string link = 2;
+message MintItemRequest {
+  string wallet_id = 1;
+  string item_id = 2;
 }
 
-message CreateUserItemResponse { shared.item.v1.Item item = 1; }
+message MintItemResponse { shared.item.v1.Item item = 1; }
+
+message ChangeOwnerItemRequest {
+  string wallet_id = 1;
+  string item_id = 2;
+}
+
+message ChangeOwnerItemResponse { shared.item.v1.Item item = 1; }

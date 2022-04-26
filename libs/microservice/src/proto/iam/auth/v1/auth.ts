@@ -2,7 +2,6 @@
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { util, configure } from 'protobufjs/minimal';
 import * as Long from 'long';
-import { UserGender } from '../../../shared/user/v1/user';
 import { Observable } from 'rxjs';
 import { Metadata } from '@grpc/grpc-js';
 
@@ -22,7 +21,6 @@ export interface RegisterRequest {
   email: string;
   password: string;
   username: string;
-  gender: UserGender;
 }
 
 export interface RegisterResponse {

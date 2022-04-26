@@ -69,12 +69,12 @@ export class UserWalletController {
     @CurrentUser() claims: JwtAccessTokenClaims,
     @Body() req: GenerateNonceMessageRequest,
   ): Promise<GenerateNonceMessageResponse> {
-    const { walletAddress, type } = req;
+    const { walletAddress, network } = req;
     const { message } = await lastValueFrom(
       this.userService.generateNonceMessage({
         userId: claims.userId,
         walletAddress,
-        type,
+        network,
       }),
     );
     return plainToClass(GenerateNonceMessageResponse, { message });
@@ -90,12 +90,12 @@ export class UserWalletController {
     @CurrentUser() claims: JwtAccessTokenClaims,
     @Body() req: ConnectWalletAddressRequest,
   ): Promise<ConnectWalletAddressResponse> {
-    const { walletAddress, type, signature } = req;
+    const { walletAddress, network, signature } = req;
     const { userWallet } = await lastValueFrom(
       this.userService.connectWalletAddress({
         userId: claims.userId,
         walletAddress,
-        type,
+        network,
         signature,
       }),
     );
@@ -112,14 +112,14 @@ export class UserWalletController {
     @CurrentUser() claims: JwtAccessTokenClaims,
     @Body() req: DisconnectWalletAddressRequest,
   ): Promise<DisconnectWalletAddressResponse> {
-    const { walletAddress, type } = req;
-    const { result } = await lastValueFrom(
+    const { walletAddress, network } = req;
+    const { wallet } = await lastValueFrom(
       this.userService.disconnectWalletAddress({
         userId: claims.userId,
         walletAddress,
-        type,
+        network,
       }),
     );
-    return plainToClass(DisconnectWalletAddressResponse, { result });
+    return plainToClass(DisconnectWalletAddressResponse, { wallet });
   }
 }

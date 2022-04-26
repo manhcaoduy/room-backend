@@ -4,12 +4,8 @@ import { LoggerFactoryService } from '@app/core/utils/logger/logger-factory.serv
 import { LoggerService } from '@app/core/utils/logger/logger.service';
 import { Request } from 'express';
 
-import {
-  IamGrpcServiceAuthService,
-  UMasterGrpcServiceUserService,
-} from '@app/microservice/constants/microservice';
+import { IamGrpcServiceAuthService } from '@app/microservice/constants/microservice';
 import { SWAGGER_ACCESS_TOKEN_KEY } from '@app/microservice/http/constants';
-import { UserServiceClient } from '@app/microservice/proto/umaster/user/v1/user';
 import { lastValueFrom } from 'rxjs';
 import { LoginRequest, LoginResponse } from './dtos/login.dto';
 import { RegisterRequest, RegisterResponse } from './dtos/register.dto';
@@ -34,8 +30,6 @@ export class AuthController {
   constructor(
     @Inject(IamGrpcServiceAuthService)
     private readonly authService: AuthServiceClient,
-    @Inject(UMasterGrpcServiceUserService)
-    private readonly userService: UserServiceClient,
     private readonly loggerFactory: LoggerFactoryService,
   ) {
     this.logger = this.loggerFactory.createLogger(
@@ -93,6 +87,7 @@ export class AuthController {
     @CurrentUser() claims: JwtAccessTokenClaims,
   ): Promise<VerifyTokenResponse> {
     return {
+      userId: claims.userId,
       email: claims.email,
       username: claims.username,
     };

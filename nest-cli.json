@@ -38,6 +38,16 @@
         "tsConfigPath": "apps/iam/tsconfig.app.json",
         "watchAssets": true
       }
+    },
+    "emaster": {
+      "type": "application",
+      "root": "apps/emaster",
+      "entryFile": "main",
+      "sourceRoot": "apps/emaster/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/emaster/tsconfig.app.json",
+        "watchAssets": true
+      }
     }
   }
 }

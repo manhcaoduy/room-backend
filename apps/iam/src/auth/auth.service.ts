@@ -22,7 +22,6 @@ import {
   JwtTokenRepository,
 } from '../shared/repositories/jwt-token';
 import { ACCESS_TOKEN_EXPIRES, REFRESH_TOKEN_EXPIRES } from './auth.constant';
-import { UserGender } from '@app/microservice/proto/shared/user/v1/user';
 import { UserEntity } from '../../../umaster/src/shared/repositories/user';
 import { RedisClient } from '@app/core/thirdparty/redis/redis.type';
 import { REDIS_CLIENT } from '@app/core/thirdparty/redis/redis.provider';
@@ -73,7 +72,6 @@ export class AuthService {
     email: string,
     password: string,
     username: string,
-    gender: UserGender,
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const foundUser = await lastValueFrom(
       this.userClient.findByEmail({ email }),
@@ -84,7 +82,7 @@ export class AuthService {
       });
     }
     const { user } = await lastValueFrom(
-      this.userClient.createUser({ email, password, username, gender }),
+      this.userClient.createUser({ email, password, username }),
     );
     const token = await this.genToken(user);
     return token;

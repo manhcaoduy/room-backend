@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsDefined, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 
 import { getEnumNumberValues } from '@app/core/utils';
-
-import { UserWalletType } from '@app/microservice/proto/shared/user/v1/user';
+import { WalletNetwork } from '@app/microservice/proto/shared/user/v1/user';
+import { WalletDto } from './user-wallet.dto';
 
 export class DisconnectWalletAddressRequest {
   @IsString()
@@ -15,14 +15,14 @@ export class DisconnectWalletAddressRequest {
   walletAddress: string;
 
   @IsDefined()
-  @IsEnum(UserWalletType)
+  @IsEnum(WalletNetwork)
   @ApiProperty({
-    description: `User wallet type ${getEnumNumberValues(UserWalletType)
-      .map((t) => `${t}: ${UserWalletType[t]}`)
+    description: `User wallet type ${getEnumNumberValues(WalletNetwork)
+      .map((t) => `${t}: ${WalletNetwork[t]}`)
       .join(', ')}`,
     type: Number,
   })
-  type: UserWalletType;
+  network: WalletNetwork;
 
   constructor(partial: Partial<DisconnectWalletAddressRequest>) {
     Object.assign(this, partial);
@@ -31,9 +31,9 @@ export class DisconnectWalletAddressRequest {
 
 export class DisconnectWalletAddressResponse {
   @ApiProperty({
-    description: 'result',
+    description: 'user wallet info',
   })
-  result: boolean;
+  userWallet: WalletDto;
 
   constructor(partial: Partial<DisconnectWalletAddressResponse>) {
     Object.assign(this, partial);

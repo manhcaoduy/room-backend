@@ -3,11 +3,10 @@ import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { util, configure } from 'protobufjs/minimal';
 import * as Long from 'long';
 import {
-  UserGender,
   User,
   UserProfile,
-  UserWalletType,
-  UserWallet,
+  WalletNetwork,
+  Wallet,
 } from '../../../shared/user/v1/user';
 import { Observable } from 'rxjs';
 import { Metadata } from '@grpc/grpc-js';
@@ -18,7 +17,6 @@ export interface CreateUserRequest {
   email: string;
   password: string;
   username: string;
-  gender: UserGender;
 }
 
 export interface CreateUserResponse {
@@ -77,7 +75,7 @@ export interface FindByWalletAddressResponse {
 export interface GenerateNonceMessageRequest {
   userId: string;
   walletAddress: string;
-  type: UserWalletType;
+  network: WalletNetwork;
 }
 
 export interface GenerateNonceMessageResponse {
@@ -87,22 +85,22 @@ export interface GenerateNonceMessageResponse {
 export interface ConnectWalletAddressRequest {
   userId: string;
   walletAddress: string;
-  type: UserWalletType;
+  network: WalletNetwork;
   signature: string;
 }
 
 export interface ConnectWalletAddressResponse {
-  userWallet?: UserWallet;
+  userWallet?: Wallet;
 }
 
 export interface DisconnectWalletAddressRequest {
   userId: string;
   walletAddress: string;
-  type: UserWalletType;
+  network: WalletNetwork;
 }
 
 export interface DisconnectWalletAddressResponse {
-  result: boolean;
+  wallet?: Wallet;
 }
 
 export interface GetWalletsRequest {
@@ -110,7 +108,7 @@ export interface GetWalletsRequest {
 }
 
 export interface GetWalletsResponse {
-  userWallets: UserWallet[];
+  userWallets: Wallet[];
 }
 
 export const UMASTER_USER_V1_PACKAGE_NAME = 'umaster.user.v1';

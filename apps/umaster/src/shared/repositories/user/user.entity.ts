@@ -1,7 +1,4 @@
 import { Exclude, Expose } from 'class-transformer';
-import 'reflect-metadata';
-
-import { UserGender } from '@app/microservice/proto/shared/user/v1/user';
 
 @Exclude()
 export class UserPublicInfo {
@@ -24,8 +21,6 @@ export class UserEntity {
   password: string;
   @Expose()
   username: string;
-  @Expose()
-  gender: UserGender;
 
   @Expose()
   createdAt: string;

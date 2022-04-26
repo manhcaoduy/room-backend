@@ -5,6 +5,13 @@ import { normalizeEmail } from '@app/core/utils/email.utils';
 
 export class VerifyTokenResponse {
   @IsNotEmpty()
+  @IsString()
+  @ApiProperty({
+    description: 'UserId',
+  })
+  userId: string;
+
+  @IsNotEmpty()
   @IsDefined()
   @IsString()
   @ApiProperty({

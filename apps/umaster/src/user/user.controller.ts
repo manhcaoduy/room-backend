@@ -119,7 +119,7 @@ export class UserController {
     const { message } = await this.userService.generateNonceMessage(
       req.userId,
       req.walletAddress,
-      req.type,
+      req.network,
     );
     return {
       message,
@@ -130,10 +130,10 @@ export class UserController {
   async connectWalletAddress(
     req: ConnectWalletAddressRequest,
   ): Promise<ConnectWalletAddressResponse> {
-    const { userWallet } = await this.userService.connectWalletAddress(
+    const userWallet = await this.userService.connectWalletAddress(
       req.userId,
       req.walletAddress,
-      req.type,
+      req.network,
       req.signature,
     );
     return {
@@ -145,13 +145,13 @@ export class UserController {
   async disconnectWalletAddress(
     req: DisconnectWalletAddressRequest,
   ): Promise<DisconnectWalletAddressResponse> {
-    const { result } = await this.userService.disconnectWalletAddress(
+    const wallet = await this.userService.disconnectWalletAddress(
       req.userId,
       req.walletAddress,
-      req.type,
+      req.network,
     );
     return {
-      result,
+      wallet,
     };
   }
 

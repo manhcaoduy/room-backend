@@ -2,9 +2,6 @@ import * as mongoose from 'mongoose';
 import { Document, Schema } from 'mongoose';
 
 import { caseInsensitiveOption } from '@app/core/dal/repositories/schema-default.options';
-import { getEnumNumberValues } from '@app/core/utils';
-
-import { UserGender } from '@app/microservice/proto/shared/user/v1/user';
 
 import { schemaOptions } from '../schema-default.options';
 import { UserEntity } from './user.entity';
@@ -15,11 +12,6 @@ const userSchema = new Schema(
     password: Schema.Types.String,
     username: {
       type: Schema.Types.String,
-    },
-    gender: {
-      type: [Schema.Types.Number],
-      enum: getEnumNumberValues(UserGender),
-      default: [UserGender.ANOTHER],
     },
   },
   schemaOptions,

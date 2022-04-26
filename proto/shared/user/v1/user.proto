@@ -2,17 +2,10 @@ syntax = "proto3";
 
 package shared.user.v1;
 
-enum UserWalletType { EVM = 0; }
-
-enum UserGender {
-  ANOTHER = 0;
-  FEMALE = 1;
-  MALE = 2;
-}
-
 message UserProfile {
-  string username = 1;
-  UserGender gender = 2;
+  string id = 1;
+  string email = 2;
+  string username = 3;
 }
 
 message User {
@@ -20,18 +13,21 @@ message User {
   string email = 2;
   string password = 3;
   string username = 4;
-  UserGender gender = 5;
 
   string created_at = 99;
   string updated_at = 100;
 }
 
-message UserWallet {
+enum WalletNetwork { EVM = 0; }
+
+message Wallet {
   string id = 1;
-  string user_id = 2;
-  string address = 3;
-  UserWalletType type = 4;
-  string nonce = 5;
+  string address = 2;
+  WalletNetwork network = 3;
+  bool is_owned = 4;
+  string user_id = 5;
+
+  string nonce = 6;
 
   string created_at = 99;
   string updated_at = 100;
