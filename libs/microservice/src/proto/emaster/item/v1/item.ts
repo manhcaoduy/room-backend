@@ -8,6 +8,30 @@ import { Metadata } from '@grpc/grpc-js';
 
 export const protobufPackage = 'emaster.item.v1';
 
+export interface GetItemsByIdsRequest {
+  itemIds: string[];
+}
+
+export interface GetItemsByIdsResponse {
+  items: Item[];
+}
+
+export interface GetItemsByUserRequest {
+  userId: string;
+}
+
+export interface GetItemsByUserResponse {
+  items: Item[];
+}
+
+export interface GetMarketplaceRequest {
+  walletAddresses: string[];
+}
+
+export interface GetMarketplaceResponse {
+  items: Item[];
+}
+
 export interface CreateItemRequest {
   userId: string;
   type: ItemType;
@@ -39,6 +63,21 @@ export interface ChangeOwnerItemResponse {
 export const EMASTER_ITEM_V1_PACKAGE_NAME = 'emaster.item.v1';
 
 export interface ItemServiceClient {
+  getItemsByIds(
+    request: GetItemsByIdsRequest,
+    metadata?: Metadata,
+  ): Observable<GetItemsByIdsResponse>;
+
+  getItemsByUser(
+    request: GetItemsByUserRequest,
+    metadata?: Metadata,
+  ): Observable<GetItemsByUserResponse>;
+
+  getMarketplace(
+    request: GetMarketplaceRequest,
+    metadata?: Metadata,
+  ): Observable<GetMarketplaceResponse>;
+
   createItem(
     request: CreateItemRequest,
     metadata?: Metadata,
@@ -56,6 +95,30 @@ export interface ItemServiceClient {
 }
 
 export interface ItemServiceController {
+  getItemsByIds(
+    request: GetItemsByIdsRequest,
+    metadata?: Metadata,
+  ):
+    | Promise<GetItemsByIdsResponse>
+    | Observable<GetItemsByIdsResponse>
+    | GetItemsByIdsResponse;
+
+  getItemsByUser(
+    request: GetItemsByUserRequest,
+    metadata?: Metadata,
+  ):
+    | Promise<GetItemsByUserResponse>
+    | Observable<GetItemsByUserResponse>
+    | GetItemsByUserResponse;
+
+  getMarketplace(
+    request: GetMarketplaceRequest,
+    metadata?: Metadata,
+  ):
+    | Promise<GetMarketplaceResponse>
+    | Observable<GetMarketplaceResponse>
+    | GetMarketplaceResponse;
+
   createItem(
     request: CreateItemRequest,
     metadata?: Metadata,
@@ -83,7 +146,14 @@ export interface ItemServiceController {
 
 export function ItemServiceControllerMethods() {
   return function (constructor: Function) {
-    const grpcMethods: string[] = ['createItem', 'mintItem', 'changeOwnerItem'];
+    const grpcMethods: string[] = [
+      'getItemsByIds',
+      'getItemsByUser',
+      'getMarketplace',
+      'createItem',
+      'mintItem',
+      'changeOwnerItem',
+    ];
     for (const method of grpcMethods) {
       const descriptor: any = Reflect.getOwnPropertyDescriptor(
         constructor.prototype,

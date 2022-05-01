@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package emaster.item_favorite.v1;
+
+import "shared/item_favorite/v1/item_favorite.proto";
+
+service ItemFavoriteService {
+  rpc GetItemFavorites(GetItemFavoritesRequest)
+      returns (GetItemFavoritesResponse) {}
+  rpc CreateItemFavorite(CreateItemFavoriteRequest)
+      returns (CreateItemFavoriteResponse) {}
+  rpc RemoveItemFavorite(RemoveItemFavoriteRequest)
+      returns (RemoveItemFavoriteResponse) {}
+}
+
+message GetItemFavoritesRequest { string user_id = 1; }
+
+message GetItemFavoritesResponse {
+  repeated shared.item_favorite.v1.ItemFavorite items = 1;
+}
+
+message CreateItemFavoriteRequest {
+  string item_id = 1;
+  string user_id = 2;
+}
+
+message CreateItemFavoriteResponse {
+  shared.item_favorite.v1.ItemFavorite item = 1;
+}
+
+message RemoveItemFavoriteRequest {
+  string item_id = 1;
+  string user_id = 2;
+}
+
+message RemoveItemFavoriteResponse { bool result = 1; }

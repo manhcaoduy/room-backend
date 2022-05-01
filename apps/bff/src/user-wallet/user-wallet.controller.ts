@@ -29,7 +29,7 @@ import { GetUserWalletsResponse } from './dtos/get-user-wallets.dto';
 
 @Controller('v1/user-wallet')
 @ApiBearerAuth(SWAGGER_ACCESS_TOKEN_KEY)
-@ApiTags('UserWallet')
+@ApiTags('User wallet')
 @UseGuards(JwtAuthGuard)
 export class UserWalletController {
   private logger: LoggerService;

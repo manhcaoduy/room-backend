@@ -5,8 +5,9 @@ import { DalModule } from '@app/core/dal/dal.module';
 
 import { configModuleOptions } from './config/module-options';
 import { ItemRepository } from './repositories/item';
+import { ItemFavoriteRepository } from './repositories/item-favorite';
 
-const repositories = [ItemRepository];
+const repositories = [ItemRepository, ItemFavoriteRepository];
 
 @Module({
   imports: [

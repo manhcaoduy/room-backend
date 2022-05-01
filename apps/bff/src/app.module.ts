@@ -8,6 +8,7 @@ import { HttpLoggingModule } from '@app/microservice/http/logging/http-logging.m
 import { AuthModule } from './auth/auth.module';
 import { UserWalletModule } from './user-wallet/user-wallet.module';
 import { ItemModule } from './item/item.module';
+import { ItemFavoriteModule } from './item-favorite/item-favorite.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ItemModule } from './item/item.module';
     AuthModule,
     UserWalletModule,
     ItemModule,
+    ItemFavoriteModule,
     LoggerFactoryModule.forRootAsync({
       useFactory: (configService: ConfigService) => {
         const loggerConfig = configService.get('logger');

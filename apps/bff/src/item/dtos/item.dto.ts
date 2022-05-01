@@ -22,4 +22,8 @@ export class ItemDto {
 
   @ApiProperty({})
   metadataIpfs: string;
+
+  constructor(partial: Partial<ItemDto>) {
+    Object.assign(this, partial);
+  }
 }

@@ -5,11 +5,27 @@ package emaster.item.v1;
 import "shared/item/v1/item.proto";
 
 service ItemService {
+  rpc GetItemsByIds(GetItemsByIdsRequest) returns (GetItemsByIdsResponse) {}
+  rpc GetItemsByUser(GetItemsByUserRequest) returns (GetItemsByUserResponse) {}
+  rpc GetMarketplace(GetMarketplaceRequest) returns (GetMarketplaceResponse) {}
+
   rpc CreateItem(CreateItemRequest) returns (CreateItemResponse) {}
   rpc MintItem(MintItemRequest) returns (MintItemResponse) {}
   rpc ChangeOwnerItem(ChangeOwnerItemRequest)
       returns (ChangeOwnerItemResponse) {}
 }
+
+message GetItemsByIdsRequest { repeated string item_ids = 1; }
+
+message GetItemsByIdsResponse { repeated shared.item.v1.Item items = 1; }
+
+message GetItemsByUserRequest { string user_id = 1; }
+
+message GetItemsByUserResponse { repeated shared.item.v1.Item items = 1; }
+
+message GetMarketplaceRequest { repeated string wallet_addresses = 1; }
+
+message GetMarketplaceResponse { repeated shared.item.v1.Item items = 1; }
 
 message CreateItemRequest {
   string user_id = 1;

@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+package shared.item_favorite.v1;
+
+message ItemFavorite {
+  string id = 1;
+  string item_id = 2;
+  string user_id = 3;
+}

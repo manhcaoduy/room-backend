@@ -9,6 +9,12 @@ import {
   ChangeOwnerItemResponse,
   CreateItemRequest,
   CreateItemResponse,
+  GetItemsByIdsRequest,
+  GetItemsByIdsResponse,
+  GetItemsByUserRequest,
+  GetItemsByUserResponse,
+  GetMarketplaceRequest,
+  GetMarketplaceResponse,
   ITEM_SERVICE_NAME,
   MintItemRequest,
   MintItemResponse,
@@ -23,14 +29,47 @@ export class ItemController {
   constructor(private readonly itemService: ItemService) {}
 
   @GrpcMethod(ITEM_SERVICE_NAME)
+  async getItemsByIds(
+    request: GetItemsByIdsRequest,
+  ): Promise<GetItemsByIdsResponse> {
+    const { itemIds } = request;
+    const items = await this.itemService.getItemsByIds({ itemIds });
+    return { items };
+  }
+
+  @GrpcMethod(ITEM_SERVICE_NAME)
+  async getItemsByUser(
+    request: GetItemsByUserRequest,
+  ): Promise<GetItemsByUserResponse> {
+    const { userId } = request;
+    const items = await this.itemService.getItemsByUser({ userId });
+    return { items };
+  }
+
+  @GrpcMethod(ITEM_SERVICE_NAME)
+  async getMarketplace(
+    request: GetMarketplaceRequest,
+  ): Promise<GetMarketplaceResponse> {
+    const { walletAddresses } = request;
+    const items = await this.itemService.getMarketplace({ walletAddresses });
+    return { items };
+  }
+
+  @GrpcMethod(ITEM_SERVICE_NAME)
   async createItem(request: CreateItemRequest): Promise<CreateItemResponse> {
-    const item = await this.itemService.createItem(request);
+    const { userId, type, metadataIpfs } = request;
+    const item = await this.itemService.createItem({
+      userId,
+      type,
+      metadataIpfs,
+    });
     return { item };
   }
 
   @GrpcMethod(ITEM_SERVICE_NAME)
   async mintItem(request: MintItemRequest): Promise<MintItemResponse> {
-    const item = await this.itemService.mintItem(request);
+    const { walletId, itemId } = request;
+    const item = await this.itemService.mintItem({ walletId, itemId });
     return { item };
   }
 
@@ -38,7 +77,8 @@ export class ItemController {
   async changeOwnerItem(
     request: ChangeOwnerItemRequest,
   ): Promise<ChangeOwnerItemResponse> {
-    const item = await this.itemService.changeOwnerItem(request);
+    const { walletId, itemId } = request;
+    const item = await this.itemService.changeOwnerItem({ walletId, itemId });
     return { item };
   }
 }

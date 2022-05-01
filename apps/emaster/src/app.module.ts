@@ -8,12 +8,14 @@ import { GrpcLoggingModule } from '@app/microservice/grpc/grpc-logging/grpc-logg
 import { HealthCheckModule } from './healthcheck/healthcheck.module';
 import { SharedModule } from './shared/shared.module';
 import { ItemModule } from './item/item.module';
+import { ItemFavoriteModule } from './item-favorite/item-favorite.module';
 
 @Module({
   imports: [
     SharedModule,
     HealthCheckModule,
     ItemModule,
+    ItemFavoriteModule,
     LoggerFactoryModule.forRootAsync({
       useFactory: (configService: ConfigService) => {
         const loggerConfig = configService.get('logger');
