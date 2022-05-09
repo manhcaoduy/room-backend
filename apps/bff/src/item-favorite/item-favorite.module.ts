@@ -2,7 +2,7 @@ import { SharedModule } from '../shared/shared.modules';
 import { Module } from '@nestjs/common';
 import {
   EMasterGrpcService,
-  EMasterGrpcServiceItemService,
+  EmasterGrpcServiceItemFavoriteService,
 } from '@app/microservice/constants/microservice';
 import { GrpcClient } from '@app/microservice/grpc/grpc-client';
 import { ItemFavoriteServiceClient } from '@app/microservice/proto/emaster/item_favorite/v1/item_favorite';
@@ -13,10 +13,10 @@ import { ItemFavoriteController } from './item-favorite.controller';
   controllers: [ItemFavoriteController],
   providers: [
     {
-      provide: EMasterGrpcServiceItemService,
+      provide: EmasterGrpcServiceItemFavoriteService,
       useFactory: (client: GrpcClient) => {
         return client.getService<ItemFavoriteServiceClient>(
-          EMasterGrpcServiceItemService,
+          EmasterGrpcServiceItemFavoriteService,
         );
       },
       inject: [EMasterGrpcService],

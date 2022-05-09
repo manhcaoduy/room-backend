@@ -5,6 +5,8 @@ import { GrpcExceptionFilter } from '@app/core/framework/exceptions/grpc-excepti
 import { GrpcLoggingInterceptor } from '@app/microservice/grpc/grpc-logging/grpc-logging.interceptor';
 import { ItemFavoriteService } from './item-favorite.service';
 import {
+  CheckFavoriteRequest,
+  CheckFavoriteResponse,
   CreateItemFavoriteRequest,
   CreateItemFavoriteResponse,
   GetItemFavoritesRequest,
@@ -20,6 +22,18 @@ import { GrpcMethod } from '@nestjs/microservices';
 @UseInterceptors(GrpcLoggingInterceptor)
 export class ItemFavoriteController {
   constructor(private readonly itemFavoriteService: ItemFavoriteService) {}
+
+  @GrpcMethod(ITEM_FAVORITE_SERVICE_NAME)
+  async checkFavorite(
+    request: CheckFavoriteRequest,
+  ): Promise<CheckFavoriteResponse> {
+    const { userId, itemId } = request;
+    const isFavorite = await this.itemFavoriteService.checkFavorite({
+      userId,
+      itemId,
+    });
+    return { isFavorite };
+  }
 
   @GrpcMethod(ITEM_FAVORITE_SERVICE_NAME)
   async getItemFavorites(

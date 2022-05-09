@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package shared.action.v1;
+
+enum ActionType {
+  CREATE = 0;
+  MINT = 1;
+  SELL = 2;
+  BUY = 3;
+}
+
+message Action {
+  string id = 1;
+  string user_id = 2;
+  string item_id = 3;
+  string item_name = 4;
+  ActionType type = 5;
+  string txHash = 6;
+
+  string created_at = 99;
+  string updated_at = 100;
+}

@@ -4,7 +4,9 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { LoggerFactoryService } from '@app/core/utils/logger/logger-factory.service';
 import { LoggerService } from '@app/core/utils/logger/logger.service';
 
-import { EMasterGrpcServiceItemService } from '@app/microservice/constants/microservice';
+import {
+  EmasterGrpcServiceItemFavoriteService,
+} from '@app/microservice/constants/microservice';
 import { SWAGGER_ACCESS_TOKEN_KEY } from '@app/microservice/http/constants';
 import { JwtAuthGuard } from '@app/microservice/http/jwt-auth/jwt-auth.guards';
 import { ItemFavoriteServiceClient } from '@app/microservice/proto/emaster/item_favorite/v1/item_favorite';
@@ -24,6 +26,10 @@ import {
   RemoveItemFavoriteRequest,
   RemoveItemFavoriteResponse,
 } from './dtos/remove-favorite-item.dto';
+import {
+  CheckItemFavoriteRequest,
+  CheckItemFavoriteResponse,
+} from './dtos/check-favorite-item.dto';
 
 @Controller('v1/item-favorite')
 @ApiBearerAuth(SWAGGER_ACCESS_TOKEN_KEY)
@@ -33,7 +39,7 @@ export class ItemFavoriteController {
   private logger: LoggerService;
 
   constructor(
-    @Inject(EMasterGrpcServiceItemService)
+    @Inject(EmasterGrpcServiceItemFavoriteService)
     private readonly itemFavoriteServiceClient: ItemFavoriteServiceClient,
     private readonly loggerFactory: LoggerFactoryService,
   ) {
@@ -54,6 +60,24 @@ export class ItemFavoriteController {
       this.itemFavoriteServiceClient.getItemFavorites({ userId }),
     );
     return plainToClass(GetItemsByUserIdDtoResponse, { items });
+  }
+
+  @Post('/check')
+  @ApiResponse({
+    status: 200,
+    type: CheckItemFavoriteResponse,
+    description: '{ status: 1: data: {as type below} }',
+  })
+  async checkItemFavorite(
+    @CurrentUser() claims: JwtAccessTokenClaims,
+    @Body() req: CheckItemFavoriteRequest,
+  ): Promise<CheckItemFavoriteResponse> {
+    const { userId } = claims;
+    const { itemId } = req;
+    const { isFavorite } = await lastValueFrom(
+      this.itemFavoriteServiceClient.checkFavorite({ userId, itemId }),
+    );
+    return plainToClass(CheckItemFavoriteResponse, { isFavorite });
   }
 
   @Post('/create')

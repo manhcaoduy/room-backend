@@ -8,6 +8,15 @@ import { Metadata } from '@grpc/grpc-js';
 
 export const protobufPackage = 'emaster.item_favorite.v1';
 
+export interface CheckFavoriteRequest {
+  userId: string;
+  itemId: string;
+}
+
+export interface CheckFavoriteResponse {
+  isFavorite: boolean;
+}
+
 export interface GetItemFavoritesRequest {
   userId: string;
 }
@@ -37,6 +46,11 @@ export interface RemoveItemFavoriteResponse {
 export const EMASTER_ITEM_FAVORITE_V1_PACKAGE_NAME = 'emaster.item_favorite.v1';
 
 export interface ItemFavoriteServiceClient {
+  checkFavorite(
+    request: CheckFavoriteRequest,
+    metadata?: Metadata,
+  ): Observable<CheckFavoriteResponse>;
+
   getItemFavorites(
     request: GetItemFavoritesRequest,
     metadata?: Metadata,
@@ -54,6 +68,14 @@ export interface ItemFavoriteServiceClient {
 }
 
 export interface ItemFavoriteServiceController {
+  checkFavorite(
+    request: CheckFavoriteRequest,
+    metadata?: Metadata,
+  ):
+    | Promise<CheckFavoriteResponse>
+    | Observable<CheckFavoriteResponse>
+    | CheckFavoriteResponse;
+
   getItemFavorites(
     request: GetItemFavoritesRequest,
     metadata?: Metadata,
@@ -82,6 +104,7 @@ export interface ItemFavoriteServiceController {
 export function ItemFavoriteServiceControllerMethods() {
   return function (constructor: Function) {
     const grpcMethods: string[] = [
+      'checkFavorite',
       'getItemFavorites',
       'createItemFavorite',
       'removeItemFavorite',

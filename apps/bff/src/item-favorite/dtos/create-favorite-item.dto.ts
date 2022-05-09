@@ -1,7 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ItemFavoriteDto } from './item-favorite.dto';
+import { IsDefined, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateItemFavoriteRequest {
+  @IsString()
+  @IsDefined()
+  @IsNotEmpty()
   @ApiProperty({})
   itemId: string;
 

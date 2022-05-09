@@ -6,6 +6,9 @@ import { DalModule } from '@app/core/dal/dal.module';
 import { configModuleOptions } from './config/module-options';
 import { ItemRepository } from './repositories/item';
 import { ItemFavoriteRepository } from './repositories/item-favorite';
+import { ClientGrpcModule } from '@app/microservice/grpc/grpc-client/client-grpc.module';
+import { UMasterGrpcService } from '@app/microservice/constants/microservice';
+import { UMasterGrpcOptions } from '@app/microservice/grpc/grpc-options/umaster.option';
 
 const repositories = [ItemRepository, ItemFavoriteRepository];
 
@@ -22,8 +25,25 @@ const repositories = [ItemRepository, ItemFavoriteRepository];
       },
       inject: [ConfigService],
     }),
+    ClientGrpcModule.forRootAsync(
+      {
+        microservice: UMasterGrpcService,
+      },
+      {
+        useFactory: (configService: ConfigService) => {
+          const grpcEndpoint = configService.get<string>(
+            'umaster.grpcEndpoint',
+          );
+          const grpcOptions = Object.assign({}, UMasterGrpcOptions, {
+            url: grpcEndpoint,
+          });
+          return { options: grpcOptions };
+        },
+        inject: [ConfigService],
+      },
+    ),
   ],
   providers: [...repositories],
-  exports: [ConfigModule, ...repositories],
+  exports: [ConfigModule, ClientGrpcModule, ...repositories],
 })
 export class SharedModule {}

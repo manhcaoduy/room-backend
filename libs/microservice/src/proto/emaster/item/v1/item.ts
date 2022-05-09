@@ -2,7 +2,7 @@
 import { GrpcMethod, GrpcStreamMethod } from '@nestjs/microservices';
 import { util, configure } from 'protobufjs/minimal';
 import * as Long from 'long';
-import { ItemType, Item } from '../../../shared/item/v1/item';
+import { Item, ItemType } from '../../../shared/item/v1/item';
 import { Observable } from 'rxjs';
 import { Metadata } from '@grpc/grpc-js';
 
@@ -25,10 +25,37 @@ export interface GetItemsByUserResponse {
 }
 
 export interface GetMarketplaceRequest {
-  walletAddresses: string[];
+  userId: string;
 }
 
 export interface GetMarketplaceResponse {
+  items: Item[];
+}
+
+export interface CheckOwnershipRequest {
+  userId: string;
+  itemId: string;
+}
+
+export interface CheckOwnershipResponse {
+  owned: boolean;
+}
+
+export interface ChangeItemSaleRequest {
+  itemId: string;
+  isForSale: boolean;
+  price: number;
+}
+
+export interface ChangeItemSaleResponse {
+  item?: Item;
+}
+
+export interface GetItemsByWalletRequest {
+  walletAddress: string;
+}
+
+export interface GetItemsByWalletResponse {
   items: Item[];
 }
 
@@ -73,10 +100,25 @@ export interface ItemServiceClient {
     metadata?: Metadata,
   ): Observable<GetItemsByUserResponse>;
 
+  getItemsByWallet(
+    request: GetItemsByWalletRequest,
+    metadata?: Metadata,
+  ): Observable<GetItemsByWalletResponse>;
+
   getMarketplace(
     request: GetMarketplaceRequest,
     metadata?: Metadata,
   ): Observable<GetMarketplaceResponse>;
+
+  checkOwnership(
+    request: CheckOwnershipRequest,
+    metadata?: Metadata,
+  ): Observable<CheckOwnershipResponse>;
+
+  changeItemSale(
+    request: ChangeItemSaleRequest,
+    metadata?: Metadata,
+  ): Observable<ChangeItemSaleResponse>;
 
   createItem(
     request: CreateItemRequest,
@@ -111,6 +153,14 @@ export interface ItemServiceController {
     | Observable<GetItemsByUserResponse>
     | GetItemsByUserResponse;
 
+  getItemsByWallet(
+    request: GetItemsByWalletRequest,
+    metadata?: Metadata,
+  ):
+    | Promise<GetItemsByWalletResponse>
+    | Observable<GetItemsByWalletResponse>
+    | GetItemsByWalletResponse;
+
   getMarketplace(
     request: GetMarketplaceRequest,
     metadata?: Metadata,
@@ -118,6 +168,22 @@ export interface ItemServiceController {
     | Promise<GetMarketplaceResponse>
     | Observable<GetMarketplaceResponse>
     | GetMarketplaceResponse;
+
+  checkOwnership(
+    request: CheckOwnershipRequest,
+    metadata?: Metadata,
+  ):
+    | Promise<CheckOwnershipResponse>
+    | Observable<CheckOwnershipResponse>
+    | CheckOwnershipResponse;
+
+  changeItemSale(
+    request: ChangeItemSaleRequest,
+    metadata?: Metadata,
+  ):
+    | Promise<ChangeItemSaleResponse>
+    | Observable<ChangeItemSaleResponse>
+    | ChangeItemSaleResponse;
 
   createItem(
     request: CreateItemRequest,
@@ -149,7 +215,10 @@ export function ItemServiceControllerMethods() {
     const grpcMethods: string[] = [
       'getItemsByIds',
       'getItemsByUser',
+      'getItemsByWallet',
       'getMarketplace',
+      'checkOwnership',
+      'changeItemSale',
       'createItem',
       'mintItem',
       'changeOwnerItem',

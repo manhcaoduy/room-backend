@@ -12,6 +12,8 @@ message Item {
   string owner = 2;
   ItemType type = 3;
   string metadataIpfs = 4;
+  bool isForSale = 5;
+  int32 price = 6;
 
   string created_at = 99;
   string updated_at = 100;

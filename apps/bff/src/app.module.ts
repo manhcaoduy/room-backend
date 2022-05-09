@@ -9,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserWalletModule } from './user-wallet/user-wallet.module';
 import { ItemModule } from './item/item.module';
 import { ItemFavoriteModule } from './item-favorite/item-favorite.module';
+import { ActionModule } from './action/action.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { ItemFavoriteModule } from './item-favorite/item-favorite.module';
     UserWalletModule,
     ItemModule,
     ItemFavoriteModule,
+    ActionModule,
     LoggerFactoryModule.forRootAsync({
       useFactory: (configService: ConfigService) => {
         const loggerConfig = configService.get('logger');

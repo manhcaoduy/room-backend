@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package umaster.action.v1;
+
+import "shared/action/v1/action.proto";
+
+service ActionService {
+  rpc CreateAction(CreateActionRequest) returns (CreateActionResponse) {}
+  rpc GetActions(GetActionsRequest) returns (GetActionsResponse) {}
+}
+
+message CreateActionRequest {
+  string user_id = 1;
+  string item_id = 2;
+  string item_name = 3;
+  shared.action.v1.ActionType type = 4;
+  string txHash = 5;
+}
+
+message CreateActionResponse { shared.action.v1.Action action = 1; }
+
+message GetActionsRequest { string user_id = 1; }
+
+message GetActionsResponse { repeated shared.action.v1.Action actions = 1; }

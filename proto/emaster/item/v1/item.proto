@@ -7,7 +7,13 @@ import "shared/item/v1/item.proto";
 service ItemService {
   rpc GetItemsByIds(GetItemsByIdsRequest) returns (GetItemsByIdsResponse) {}
   rpc GetItemsByUser(GetItemsByUserRequest) returns (GetItemsByUserResponse) {}
+  rpc GetItemsByWallet(GetItemsByWalletRequest)
+      returns (GetItemsByWalletResponse) {}
   rpc GetMarketplace(GetMarketplaceRequest) returns (GetMarketplaceResponse) {}
+
+  rpc CheckOwnership(CheckOwnershipRequest) returns (CheckOwnershipResponse) {}
+
+  rpc ChangeItemSale(ChangeItemSaleRequest) returns (ChangeItemSaleResponse) {}
 
   rpc CreateItem(CreateItemRequest) returns (CreateItemResponse) {}
   rpc MintItem(MintItemRequest) returns (MintItemResponse) {}
@@ -23,9 +29,28 @@ message GetItemsByUserRequest { string user_id = 1; }
 
 message GetItemsByUserResponse { repeated shared.item.v1.Item items = 1; }
 
-message GetMarketplaceRequest { repeated string wallet_addresses = 1; }
+message GetMarketplaceRequest { string user_id = 1; }
 
 message GetMarketplaceResponse { repeated shared.item.v1.Item items = 1; }
+
+message CheckOwnershipRequest {
+  string user_id = 1;
+  string item_id = 2;
+}
+
+message CheckOwnershipResponse { bool owned = 1; }
+
+message ChangeItemSaleRequest {
+  string item_id = 1;
+  bool isForSale = 2;
+  int32 price = 3;
+}
+
+message ChangeItemSaleResponse { shared.item.v1.Item item = 1; }
+
+message GetItemsByWalletRequest { string wallet_address = 1; }
+
+message GetItemsByWalletResponse { repeated shared.item.v1.Item items = 1; }
 
 message CreateItemRequest {
   string user_id = 1;

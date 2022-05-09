@@ -5,14 +5,20 @@ import { GrpcExceptionFilter } from '@app/core/framework/exceptions/grpc-excepti
 
 import { GrpcLoggingInterceptor } from '@app/microservice/grpc/grpc-logging/grpc-logging.interceptor';
 import {
+  ChangeItemSaleRequest,
+  ChangeItemSaleResponse,
   ChangeOwnerItemRequest,
   ChangeOwnerItemResponse,
+  CheckOwnershipRequest,
+  CheckOwnershipResponse,
   CreateItemRequest,
   CreateItemResponse,
   GetItemsByIdsRequest,
   GetItemsByIdsResponse,
   GetItemsByUserRequest,
   GetItemsByUserResponse,
+  GetItemsByWalletRequest,
+  GetItemsByWalletResponse,
   GetMarketplaceRequest,
   GetMarketplaceResponse,
   ITEM_SERVICE_NAME,
@@ -50,9 +56,40 @@ export class ItemController {
   async getMarketplace(
     request: GetMarketplaceRequest,
   ): Promise<GetMarketplaceResponse> {
-    const { walletAddresses } = request;
-    const items = await this.itemService.getMarketplace({ walletAddresses });
+    const { userId } = request;
+    const items = await this.itemService.getMarketplace({ userId });
     return { items };
+  }
+
+  @GrpcMethod(ITEM_SERVICE_NAME)
+  async checkOwnership(
+    request: CheckOwnershipRequest,
+  ): Promise<CheckOwnershipResponse> {
+    const { userId, itemId } = request;
+    const owned = await this.itemService.checkOwnership({ userId, itemId });
+    return { owned };
+  }
+
+  @GrpcMethod(ITEM_SERVICE_NAME)
+  async getItemsByWallet(
+    request: GetItemsByWalletRequest,
+  ): Promise<GetItemsByWalletResponse> {
+    const { walletAddress } = request;
+    const items = await this.itemService.getItemsByWallet({ walletAddress });
+    return { items };
+  }
+
+  @GrpcMethod(ITEM_SERVICE_NAME)
+  async changeItemSale(
+    request: ChangeItemSaleRequest,
+  ): Promise<ChangeItemSaleResponse> {
+    const { itemId, isForSale, price } = request;
+    const item = await this.itemService.changeItemSale({
+      itemId,
+      isForSale,
+      price,
+    });
+    return { item };
   }
 
   @GrpcMethod(ITEM_SERVICE_NAME)

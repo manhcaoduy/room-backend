@@ -14,4 +14,7 @@ export default () => ({
     uri: process.env.MONGO_URI,
     debug: parseBooleanConfig(process.env.MONGO_DEBUG),
   },
+  umaster: {
+    grpcEndpoint: process.env.UMASTER_GRPC_ENDPOINT,
+  },
 });

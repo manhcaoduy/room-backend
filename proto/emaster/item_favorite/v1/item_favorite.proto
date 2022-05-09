@@ -5,6 +5,7 @@ package emaster.item_favorite.v1;
 import "shared/item_favorite/v1/item_favorite.proto";
 
 service ItemFavoriteService {
+  rpc CheckFavorite(CheckFavoriteRequest) returns (CheckFavoriteResponse) {}
   rpc GetItemFavorites(GetItemFavoritesRequest)
       returns (GetItemFavoritesResponse) {}
   rpc CreateItemFavorite(CreateItemFavoriteRequest)
@@ -12,6 +13,13 @@ service ItemFavoriteService {
   rpc RemoveItemFavorite(RemoveItemFavoriteRequest)
       returns (RemoveItemFavoriteResponse) {}
 }
+
+message CheckFavoriteRequest {
+  string user_id = 1;
+  string item_id = 2;
+}
+
+message CheckFavoriteResponse { bool is_favorite = 1; }
 
 message GetItemFavoritesRequest { string user_id = 1; }
 

@@ -36,6 +36,18 @@ import {
 import { ItemServiceClient } from '@app/microservice/proto/emaster/item/v1/item';
 import { GetMarketplaceResponse } from './dtos/get-marketplace.dto';
 import { UserServiceClient } from '@app/microservice/proto/umaster/user/v1/user';
+import {
+  GetWalletItemsQuery,
+  GetWalletItemsResponse,
+} from './dtos/get-items-by-wallet.dto';
+import {
+  ChangeItemSaleRequest,
+  ChangeItemSaleResponse,
+} from './dtos/change-item-sale.dto';
+import {
+  CheckOwnershipRequest,
+  CheckOwnershipResponse,
+} from './dtos/check-ownership.dto';
 
 @Controller('v1/items')
 @ApiBearerAuth(SWAGGER_ACCESS_TOKEN_KEY)
@@ -87,7 +99,7 @@ export class ItemController {
     return plainToClass(GetItemsByUserIdDtoResponse, { items });
   }
 
-  @Post('/marketplace')
+  @Get('/marketplace')
   @ApiResponse({
     status: 200,
     type: GetMarketplaceResponse,
@@ -97,17 +109,26 @@ export class ItemController {
     @CurrentUser() claims: JwtAccessTokenClaims,
   ): Promise<GetMarketplaceResponse> {
     const { userId } = claims;
-    const { userWallets } = await lastValueFrom(
-      this.userService.getWallets({ userId }),
-    );
-    const walletAddresses = userWallets.map((userWallet) => {
-      const { address } = userWallet;
-      return address;
-    });
     const { items } = await lastValueFrom(
-      this.itemService.getMarketplace({ walletAddresses }),
+      this.itemService.getMarketplace({ userId }),
     );
     return plainToClass(GetMarketplaceResponse, { items });
+  }
+
+  @Get('/wallet')
+  @ApiResponse({
+    status: 200,
+    type: GetWalletItemsResponse,
+    description: '{ status: 1: data: {as type below} }',
+  })
+  async getItemsByWallet(
+    @Query() query: GetWalletItemsQuery,
+  ): Promise<GetWalletItemsResponse> {
+    const { walletAddress } = query;
+    const { items } = await lastValueFrom(
+      this.itemService.getItemsByWallet({ walletAddress }),
+    );
+    return plainToClass(GetWalletItemsResponse, { items });
   }
 
   @Post('/create')
@@ -120,8 +141,13 @@ export class ItemController {
     @CurrentUser() claims: JwtAccessTokenClaims,
     @Body() req: CreateItemRequest,
   ): Promise<CreateItemResponse> {
+    const { metadataIpfs, type } = req;
     const { item } = await lastValueFrom(
-      this.itemService.createItem({ ...req, userId: claims.userId }),
+      this.itemService.createItem({
+        metadataIpfs,
+        type,
+        userId: claims.userId,
+      }),
     );
     return plainToClass(CreateItemResponse, { item });
   }
@@ -158,5 +184,40 @@ export class ItemController {
       this.itemService.changeOwnerItem({ walletId, itemId }),
     );
     return plainToClass(ChangeOwnerItemResponse, { item });
+  }
+
+  @Post('/change-item-sale')
+  @ApiResponse({
+    status: 200,
+    type: ChangeItemSaleResponse,
+    description: '{ data: {as type below} }',
+  })
+  async changeItemSale(
+    @CurrentUser() claims: JwtAccessTokenClaims,
+    @Body() req: ChangeItemSaleRequest,
+  ): Promise<ChangeItemSaleResponse> {
+    const { itemId, isForSale, price } = req;
+    const { item } = await lastValueFrom(
+      this.itemService.changeItemSale({ itemId, isForSale, price }),
+    );
+    return plainToClass(ChangeOwnerItemResponse, { item });
+  }
+
+  @Post('/check-ownership')
+  @ApiResponse({
+    status: 200,
+    type: CheckOwnershipResponse,
+    description: '{ data: {as type below} }',
+  })
+  async checkOwnership(
+    @CurrentUser() claims: JwtAccessTokenClaims,
+    @Body() req: CheckOwnershipRequest,
+  ): Promise<CheckOwnershipResponse> {
+    const { userId } = claims;
+    const { itemId } = req;
+    const { owned } = await lastValueFrom(
+      this.itemService.checkOwnership({ userId, itemId }),
+    );
+    return plainToClass(CheckOwnershipResponse, { owned });
   }
 }

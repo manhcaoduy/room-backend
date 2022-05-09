@@ -21,6 +21,21 @@ export class ItemFavoriteService {
     this.logger = loggerFactory.createLogger(ItemFavoriteService.name);
   }
 
+  async checkFavorite(request: {
+    userId: string;
+    itemId: string;
+  }): Promise<boolean> {
+    const { userId, itemId } = request;
+    const item = await this.itemFavoriteRepository.findOne({
+      userId,
+      itemId,
+    });
+    if (item) {
+      return true;
+    }
+    return false;
+  }
+
   async getItemFavorites(request: {
     userId: string;
   }): Promise<ItemFavoriteEntity[]> {

@@ -1,9 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { LoggerFactoryService } from '@app/core/utils/logger/logger-factory.service';
 import { LoggerService } from '@app/core/utils/logger/logger.service';
 import { ItemEntity, ItemRepository } from '../shared/repositories/item';
 import { ItemType } from '@app/microservice/proto/shared/item/v1/item';
 import { GrpcDataLossException } from '@app/core/framework/exceptions/grpc-exception';
+import { UserServiceClient } from '@app/microservice/proto/umaster/user/v1/user';
+import { UMasterGrpcServiceUserService } from '@app/microservice/constants/microservice';
+import { lastValueFrom } from 'rxjs';
 
 @Injectable()
 export class ItemService {
@@ -12,6 +15,8 @@ export class ItemService {
   constructor(
     private itemRepository: ItemRepository,
     private readonly loggerFactory: LoggerFactoryService,
+    @Inject(UMasterGrpcServiceUserService)
+    private readonly userServiceClient: UserServiceClient,
   ) {
     this.logger = loggerFactory.createLogger(ItemService.name);
   }
@@ -29,21 +34,81 @@ export class ItemService {
 
   async getItemsByUser(request: { userId: string }): Promise<ItemEntity[]> {
     const { userId } = request;
-    const items = await this.itemRepository.find({
-      userId,
+    const { userWallets } = await lastValueFrom(
+      this.userServiceClient.getWallets({ userId }),
+    );
+    const walletAddresses = userWallets.map((userWallet) => userWallet.address);
+
+    const userItems = await this.itemRepository.find({
+      type: ItemType.USER,
+      owner: userId,
     });
-    return items;
+
+    const walletItems = await this.itemRepository.find({
+      type: ItemType.WALLET,
+      owner: { $in: walletAddresses },
+    });
+
+    return [...userItems, ...walletItems];
   }
 
-  async getMarketplace(request: {
-    walletAddresses: string[];
-  }): Promise<ItemEntity[]> {
-    const { walletAddresses } = request;
+  async getMarketplace(request: { userId: string }): Promise<ItemEntity[]> {
+    const { userId } = request;
+    const { userWallets } = await lastValueFrom(
+      this.userServiceClient.getWallets({ userId }),
+    );
+    const walletAddresses = userWallets.map((userWallet) => userWallet.address);
     const items = await this.itemRepository.find({
       type: ItemType.WALLET,
       owner: { $nin: walletAddresses },
     });
     return items;
+  }
+
+  async getItemsByWallet(request: {
+    walletAddress: string;
+  }): Promise<ItemEntity[]> {
+    const { walletAddress } = request;
+    const items = await this.itemRepository.find({
+      type: ItemType.WALLET,
+      owner: walletAddress,
+    });
+    return items;
+  }
+
+  async checkOwnership(request: {
+    userId: string;
+    itemId: string;
+  }): Promise<boolean> {
+    const { userId, itemId } = request;
+    const { owner } = await this.itemRepository.findOne({ id: itemId });
+    const { userWallets } = await lastValueFrom(
+      this.userServiceClient.getWallets({ userId }),
+    );
+    let owned = false;
+    userWallets.forEach((userWallet) => {
+      const { address } = userWallet;
+      if (address === owner) {
+        owned = true;
+      }
+    });
+    if (owner === userId) {
+      owned = true;
+    }
+    return owned;
+  }
+
+  async changeItemSale(request: {
+    itemId: string;
+    isForSale: boolean;
+    price: number;
+  }): Promise<ItemEntity> {
+    const { itemId, isForSale, price } = request;
+    const item = await this.itemRepository.updateOneAndReturn(
+      { itemId },
+      { isForSale, price },
+    );
+    return item;
   }
 
   async createItem(request: {

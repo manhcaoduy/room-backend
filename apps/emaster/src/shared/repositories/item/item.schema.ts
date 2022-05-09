@@ -18,6 +18,14 @@ const itemSchema = new Schema(
       type: Schema.Types.String,
       unique: true,
     },
+    isForSale: {
+      type: Schema.Types.Boolean,
+      default: false,
+    },
+    price: {
+      type: Schema.Types.Number,
+      default: 0,
+    },
   },
   schemaOptions,
 );

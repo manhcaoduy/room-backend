@@ -21,5 +21,8 @@ export const configModuleOptions: ConfigModuleOptions = {
 
     // Mongo
     MONGO_URI: Joi.string().required(),
+
+    // umaster
+    UMASTER_GRPC_ENDPOINT: Joi.string().required(),
   }),
 };

@@ -1,28 +1,32 @@
 import { Exclude, Expose } from 'class-transformer';
-import { ItemType } from '@app/microservice/proto/shared/item/v1/item';
+import { ActionType } from '@app/microservice/proto/shared/action/v1/action';
 
 @Exclude()
-export class ItemEntity {
+export class ActionEntity {
   @Expose({ name: '_id' })
   id: string;
 
   @Expose()
-  owner: string;
+  userId: string;
+
   @Expose()
-  type: ItemType;
+  itemId: string;
+
   @Expose()
-  metadataIpfs: string;
+  itemName: string;
+
   @Expose()
-  isForSale: boolean;
+  type: ActionType;
+
   @Expose()
-  price: number;
+  txHash: string;
 
   @Expose()
   createdAt: string;
   @Expose()
   updatedAt: string;
 
-  public constructor(init?: Partial<ItemEntity>) {
+  public constructor(init?: Partial<ActionEntity>) {
     Object.assign(this, init);
   }
 }

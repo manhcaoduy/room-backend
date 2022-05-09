@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ItemType } from '@app/microservice/proto/shared/item/v1/item';
 import { ItemDto } from './item.dto';
-import { IsDefined, IsEnum } from 'class-validator';
+import { IsDefined, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { getEnumNumberValues } from '@app/core/utils';
 
 export class CreateItemRequest {
@@ -14,6 +14,9 @@ export class CreateItemRequest {
   })
   type: ItemType;
 
+  @IsDefined()
+  @IsNotEmpty()
+  @IsString()
   @ApiProperty({
     description: 'metadata ipfs',
   })

@@ -6,8 +6,9 @@ import { DalModule } from '@app/core/dal/dal.module';
 import { configModuleOptions } from './config/module-options';
 import { UserRepository } from './repositories/user';
 import { WalletRepository } from './repositories/wallet';
+import { ActionRepository } from './repositories/action';
 
-const repositories = [UserRepository, WalletRepository];
+const repositories = [UserRepository, WalletRepository, ActionRepository];
 
 @Module({
   imports: [
