@@ -1,13 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ItemDto } from './item.dto';
 import { IsNotEmpty } from 'class-validator';
+import { LowercaseWalletAddress } from '@app/core/utils/transform';
 
 export class ChangeOwnerItemRequest {
   @IsNotEmpty()
+  @LowercaseWalletAddress()
   @ApiProperty({
-    description: 'wallet id',
+    description: 'wallet address',
   })
-  walletId: string;
+  walletAddress: string;
 
   @IsNotEmpty()
   @ApiProperty({

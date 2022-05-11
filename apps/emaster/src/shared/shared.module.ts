@@ -9,8 +9,13 @@ import { ItemFavoriteRepository } from './repositories/item-favorite';
 import { ClientGrpcModule } from '@app/microservice/grpc/grpc-client/client-grpc.module';
 import { UMasterGrpcService } from '@app/microservice/constants/microservice';
 import { UMasterGrpcOptions } from '@app/microservice/grpc/grpc-options/umaster.option';
+import { ItemHistoryRepository } from './repositories/item-history';
 
-const repositories = [ItemRepository, ItemFavoriteRepository];
+const repositories = [
+  ItemRepository,
+  ItemFavoriteRepository,
+  ItemHistoryRepository,
+];
 
 @Module({
   imports: [

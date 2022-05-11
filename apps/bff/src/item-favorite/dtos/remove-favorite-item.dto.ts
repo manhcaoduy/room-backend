@@ -1,6 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsDefined, IsString } from 'class-validator';
 
 export class RemoveItemFavoriteRequest {
+  @IsString()
+  @IsDefined()
   @ApiProperty({})
   itemId: string;
 

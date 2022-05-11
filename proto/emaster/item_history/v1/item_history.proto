@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package emaster.item_history.v1;
+
+import "shared/item_history/v1/item_history.proto";
+
+service ItemHistoryService {
+  rpc CreateItemHistory(CreateItemHistoryRequest)
+      returns (CreateItemHistoryResponse) {}
+  rpc GetItemHistory(GetItemHistoryRequest) returns (GetItemHistoryResponse) {}
+}
+
+message CreateItemHistoryRequest {
+  string item_id = 1;
+  string actor = 2;
+  shared.item_history.v1.HistoryType type = 3;
+}
+
+message CreateItemHistoryResponse {
+  shared.item_history.v1.ItemHistory item_history = 1;
+}
+
+message GetItemHistoryRequest { string item_id = 1; }
+
+message GetItemHistoryResponse {
+  repeated shared.item_history.v1.ItemHistory item_histories = 1;
+}

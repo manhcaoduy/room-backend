@@ -26,6 +26,14 @@ const itemSchema = new Schema(
       type: Schema.Types.Number,
       default: 0,
     },
+    tokenId: {
+      type: Schema.Types.Number,
+      default: -1,
+    },
+    marketItemId: {
+      type: Schema.Types.Number,
+      default: -1,
+    },
   },
   schemaOptions,
 );

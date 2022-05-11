@@ -1,19 +1,28 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ItemDto } from './item.dto';
-import { IsNotEmpty } from 'class-validator';
+import { IsDefined, IsNotEmpty, IsNumber } from 'class-validator';
+import { LowercaseWalletAddress } from '@app/core/utils/transform';
 
 export class MintItemRequest {
   @IsNotEmpty()
+  @LowercaseWalletAddress()
   @ApiProperty({
-    description: 'wallet id',
+    description: 'wallet address',
   })
-  walletId: string;
+  walletAddress: string;
 
   @IsNotEmpty()
   @ApiProperty({
     description: 'item id',
   })
   itemId: string;
+
+  @IsNumber()
+  @IsDefined()
+  @ApiProperty({
+    description: 'token id',
+  })
+  tokenId: number;
 
   constructor(partial: Partial<MintItemRequest>) {
     Object.assign(this, partial);

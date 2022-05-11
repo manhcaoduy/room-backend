@@ -42,8 +42,9 @@ message CheckOwnershipResponse { bool owned = 1; }
 
 message ChangeItemSaleRequest {
   string item_id = 1;
-  bool isForSale = 2;
+  bool is_for_sale = 2;
   int32 price = 3;
+  optional int32 market_item_id = 4;
 }
 
 message ChangeItemSaleResponse { shared.item.v1.Item item = 1; }
@@ -55,20 +56,21 @@ message GetItemsByWalletResponse { repeated shared.item.v1.Item items = 1; }
 message CreateItemRequest {
   string user_id = 1;
   shared.item.v1.ItemType type = 2;
-  string metadataIpfs = 3;
+  string metadata_ipfs = 3;
 }
 
 message CreateItemResponse { shared.item.v1.Item item = 1; }
 
 message MintItemRequest {
-  string wallet_id = 1;
+  string wallet_address = 1;
   string item_id = 2;
+  int32 token_id = 3;
 }
 
 message MintItemResponse { shared.item.v1.Item item = 1; }
 
 message ChangeOwnerItemRequest {
-  string wallet_id = 1;
+  string wallet_address = 1;
   string item_id = 2;
 }
 

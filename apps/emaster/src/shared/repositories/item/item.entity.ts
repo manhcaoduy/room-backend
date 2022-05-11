@@ -16,6 +16,10 @@ export class ItemEntity {
   isForSale: boolean;
   @Expose()
   price: number;
+  @Expose()
+  tokenId: number;
+  @Expose()
+  marketItemId: number;
 
   @Expose()
   createdAt: string;

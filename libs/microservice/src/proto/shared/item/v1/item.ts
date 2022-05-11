@@ -16,6 +16,8 @@ export interface Item {
   metadataIpfs: string;
   isForSale: boolean;
   price: number;
+  tokenId: number;
+  marketItemId: number;
   createdAt: string;
   updatedAt: string;
 }

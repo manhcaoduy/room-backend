@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 import { ItemType } from '@app/microservice/proto/shared/item/v1/item';
-import { IsDefined, IsEnum } from 'class-validator';
+import { IsBoolean, IsDefined, IsEnum, IsNumber } from 'class-validator';
 import { getEnumNumberValues } from '@app/core/utils';
 
 export class ItemDto {
@@ -22,6 +22,21 @@ export class ItemDto {
 
   @ApiProperty({})
   metadataIpfs: string;
+
+  @ApiProperty()
+  @IsBoolean()
+  @IsDefined()
+  isForSale: boolean;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsDefined()
+  price: number;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsDefined()
+  tokenId: number;
 
   constructor(partial: Partial<ItemDto>) {
     Object.assign(this, partial);

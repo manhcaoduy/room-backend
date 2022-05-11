@@ -45,6 +45,7 @@ export interface ChangeItemSaleRequest {
   itemId: string;
   isForSale: boolean;
   price: number;
+  marketItemId?: number | undefined;
 }
 
 export interface ChangeItemSaleResponse {
@@ -70,8 +71,9 @@ export interface CreateItemResponse {
 }
 
 export interface MintItemRequest {
-  walletId: string;
+  walletAddress: string;
   itemId: string;
+  tokenId: number;
 }
 
 export interface MintItemResponse {
@@ -79,7 +81,7 @@ export interface MintItemResponse {
 }
 
 export interface ChangeOwnerItemRequest {
-  walletId: string;
+  walletAddress: string;
   itemId: string;
 }
 

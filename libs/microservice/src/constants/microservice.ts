@@ -11,3 +11,4 @@ export const UmasterGrpcServiceActionService = 'ActionService';
 export const EMasterGrpcService = 'EMASTER_GRPC_SERVICE';
 export const EMasterGrpcServiceItemService = 'ItemService';
 export const EmasterGrpcServiceItemFavoriteService = 'ItemFavoriteService';
+export const EmasterGrpcServiceItemHistoryService = 'ItemHistoryService';

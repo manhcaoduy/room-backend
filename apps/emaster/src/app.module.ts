@@ -9,6 +9,7 @@ import { HealthCheckModule } from './healthcheck/healthcheck.module';
 import { SharedModule } from './shared/shared.module';
 import { ItemModule } from './item/item.module';
 import { ItemFavoriteModule } from './item-favorite/item-favorite.module';
+import { ItemHistoryModule } from './item-history/item-history.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ItemFavoriteModule } from './item-favorite/item-favorite.module';
     HealthCheckModule,
     ItemModule,
     ItemFavoriteModule,
+    ItemHistoryModule,
     LoggerFactoryModule.forRootAsync({
       useFactory: (configService: ConfigService) => {
         const loggerConfig = configService.get('logger');

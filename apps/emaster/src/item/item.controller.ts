@@ -83,11 +83,12 @@ export class ItemController {
   async changeItemSale(
     request: ChangeItemSaleRequest,
   ): Promise<ChangeItemSaleResponse> {
-    const { itemId, isForSale, price } = request;
+    const { itemId, isForSale, price, marketItemId } = request;
     const item = await this.itemService.changeItemSale({
       itemId,
       isForSale,
       price,
+      marketItemId,
     });
     return { item };
   }
@@ -105,8 +106,12 @@ export class ItemController {
 
   @GrpcMethod(ITEM_SERVICE_NAME)
   async mintItem(request: MintItemRequest): Promise<MintItemResponse> {
-    const { walletId, itemId } = request;
-    const item = await this.itemService.mintItem({ walletId, itemId });
+    const { walletAddress, itemId, tokenId } = request;
+    const item = await this.itemService.mintItem({
+      walletAddress,
+      itemId,
+      tokenId,
+    });
     return { item };
   }
 
@@ -114,8 +119,11 @@ export class ItemController {
   async changeOwnerItem(
     request: ChangeOwnerItemRequest,
   ): Promise<ChangeOwnerItemResponse> {
-    const { walletId, itemId } = request;
-    const item = await this.itemService.changeOwnerItem({ walletId, itemId });
+    const { walletAddress, itemId } = request;
+    const item = await this.itemService.changeOwnerItem({
+      walletAddress,
+      itemId,
+    });
     return { item };
   }
 }

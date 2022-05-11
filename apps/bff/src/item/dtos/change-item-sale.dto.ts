@@ -5,6 +5,7 @@ import {
   IsDefined,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
 } from 'class-validator';
 
@@ -30,6 +31,13 @@ export class ChangeItemSaleRequest {
     description: 'price',
   })
   price: number;
+
+  @IsNumber()
+  @IsOptional()
+  @ApiProperty({
+    description: 'market item id',
+  })
+  marketItemId?: number;
 
   constructor(partial: Partial<ChangeItemSaleRequest>) {
     Object.assign(this, partial);

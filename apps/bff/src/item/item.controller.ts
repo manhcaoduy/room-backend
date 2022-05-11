@@ -162,9 +162,9 @@ export class ItemController {
     @CurrentUser() claims: JwtAccessTokenClaims,
     @Body() req: MintItemRequest,
   ): Promise<MintItemResponse> {
-    const { walletId, itemId } = req;
+    const { walletAddress, itemId, tokenId } = req;
     const { item } = await lastValueFrom(
-      this.itemService.mintItem({ walletId, itemId }),
+      this.itemService.mintItem({ walletAddress, itemId, tokenId }),
     );
     return plainToClass(MintItemResponse, { item });
   }
@@ -179,9 +179,9 @@ export class ItemController {
     @CurrentUser() claims: JwtAccessTokenClaims,
     @Body() req: ChangeOwnerItemRequest,
   ): Promise<ChangeOwnerItemResponse> {
-    const { walletId, itemId } = req;
+    const { walletAddress, itemId } = req;
     const { item } = await lastValueFrom(
-      this.itemService.changeOwnerItem({ walletId, itemId }),
+      this.itemService.changeOwnerItem({ walletAddress, itemId }),
     );
     return plainToClass(ChangeOwnerItemResponse, { item });
   }
@@ -196,9 +196,14 @@ export class ItemController {
     @CurrentUser() claims: JwtAccessTokenClaims,
     @Body() req: ChangeItemSaleRequest,
   ): Promise<ChangeItemSaleResponse> {
-    const { itemId, isForSale, price } = req;
+    const { itemId, isForSale, price, marketItemId } = req;
     const { item } = await lastValueFrom(
-      this.itemService.changeItemSale({ itemId, isForSale, price }),
+      this.itemService.changeItemSale({
+        itemId,
+        isForSale,
+        price,
+        marketItemId,
+      }),
     );
     return plainToClass(ChangeOwnerItemResponse, { item });
   }

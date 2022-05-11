@@ -6,11 +6,13 @@ import { getEnumNumberValues } from '@app/core/utils';
 import { WalletNetwork } from '@app/microservice/proto/shared/user/v1/user';
 
 import { WalletDto } from './user-wallet.dto';
+import { LowercaseWalletAddress } from '@app/core/utils/transform';
 
 export class ConnectWalletAddressRequest {
   @IsString()
   @IsDefined()
   @IsNotEmpty()
+  @LowercaseWalletAddress()
   @ApiProperty({
     description: 'wallet address',
   })

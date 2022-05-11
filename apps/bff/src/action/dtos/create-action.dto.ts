@@ -31,7 +31,6 @@ export class CreateActionRequest {
   type: ActionType;
 
   @IsDefined()
-  @IsNotEmpty()
   @IsString()
   @ApiProperty({
     description: 'Action hash',

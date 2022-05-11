@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package shared.item_history.v1;
+
+enum HistoryType {
+  CREATE = 0;
+  MINT = 1;
+  ENABLE = 2;
+  CANCELED = 3;
+  BUY = 4;
+}
+
+message ItemHistory {
+  string item_id = 1;
+  string actor = 2;
+  HistoryType type = 3;
+}

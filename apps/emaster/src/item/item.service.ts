@@ -81,7 +81,7 @@ export class ItemService {
     itemId: string;
   }): Promise<boolean> {
     const { userId, itemId } = request;
-    const { owner } = await this.itemRepository.findOne({ id: itemId });
+    const { owner } = await this.itemRepository.findOne({ _id: itemId });
     const { userWallets } = await lastValueFrom(
       this.userServiceClient.getWallets({ userId }),
     );
@@ -102,11 +102,12 @@ export class ItemService {
     itemId: string;
     isForSale: boolean;
     price: number;
+    marketItemId?: number;
   }): Promise<ItemEntity> {
-    const { itemId, isForSale, price } = request;
+    const { itemId, isForSale, price, marketItemId } = request;
     const item = await this.itemRepository.updateOneAndReturn(
-      { itemId },
-      { isForSale, price },
+      { _id: itemId },
+      { isForSale, price, marketItemId },
     );
     return item;
   }
@@ -126,30 +127,36 @@ export class ItemService {
   }
 
   async mintItem(request: {
-    walletId: string;
+    walletAddress: string;
     itemId: string;
+    tokenId: number;
   }): Promise<ItemEntity> {
-    const { walletId, itemId } = request;
+    const { walletAddress, itemId, tokenId } = request;
     const item = await this.itemRepository.updateOneAndReturn(
-      { itemId },
+      { _id: itemId },
       {
-        owner: walletId,
+        owner: walletAddress,
         type: ItemType.WALLET,
+        tokenId,
       },
     );
+    console.log({ itemId, item });
     return item;
   }
 
   async changeOwnerItem(request: {
-    walletId: string;
+    walletAddress: string;
     itemId: string;
   }): Promise<ItemEntity> {
-    const { walletId, itemId } = request;
+    const { walletAddress, itemId } = request;
     const item = await this.itemRepository.updateOneAndReturn(
-      { itemId },
+      { _id: itemId },
       {
-        owner: walletId,
+        owner: walletAddress,
         type: ItemType.WALLET,
+        isForSale: false,
+        price: -1,
+        marketItemId: -1,
       },
     );
     return item;

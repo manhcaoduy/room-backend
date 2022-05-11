@@ -11,9 +11,11 @@ message Item {
   string id = 1;
   string owner = 2;
   ItemType type = 3;
-  string metadataIpfs = 4;
-  bool isForSale = 5;
+  string metadata_ipfs = 4;
+  bool is_for_sale = 5;
   int32 price = 6;
+  int32 token_id = 7;
+  int32 market_item_id = 8;
 
   string created_at = 99;
   string updated_at = 100;
